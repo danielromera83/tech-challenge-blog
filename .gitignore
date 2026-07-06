@@ -1,0 +1,17 @@
+# Dependências
+node_modules/
+
+# Variáveis de ambiente
+.env
+
+# Cobertura de testes
+coverage/
+
+# Logs
+*.log
+
+# Prisma
+prisma/dev.db
+
+# Sistema operacional
+.DS_Store

@@ -1,0 +1,31 @@
+generator client {
+
+provider = "prisma-client-js"
+
+}
+
+
+datasource db {
+
+provider = "postgresql"
+
+}
+
+
+model Post {
+
+id Int @id @default(autoincrement())
+
+
+titulo String
+
+
+conteudo String
+
+
+autor String
+
+
+createdAt DateTime @default(now())
+
+}
