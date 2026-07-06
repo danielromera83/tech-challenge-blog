@@ -22,26 +22,44 @@ describe("Posts API", () => {
         expect(response.statusCode).toBe(400);
     });
     test("GET /posts/:id deve retornar um post existente", async () => {
-        const lista = await request(app).get("/posts");
 
-        expect(lista.statusCode).toBe(200);
-        expect(lista.body.length).toBeGreaterThan(0);
+    // Cria um post para o teste
+        const criado = await request(app)
+            .post("/posts")
+            .send({
+                titulo: "Post de teste",
+                conteudo: "Conteúdo de teste",
+                autor: "Daniel"
+            });
 
-        const id = lista.body[0].id;
+        expect(criado.statusCode).toBe(201);
 
+        const id = criado.body.id;
+
+    // Busca o post criado
         const response = await request(app).get(`/posts/${id}`);
 
         expect(response.statusCode).toBe(200);
         expect(response.body.id).toBe(id);
+        expect(response.body.titulo).toBe("Post de teste");
     });
     test("GET /posts/search deve retornar uma lista", async () => {
-        const response = await request(app).get("/posts/search?termo=Daniel");
+
+        await request(app)
+            .post("/posts")
+            .send({
+                titulo: "Node.js",
+                conteudo: "Aprendendo testes",
+                autor: "Daniel"
+            });
+
+        const response = await request(app).get("/posts/search?termo=Node");
 
         expect(response.statusCode).toBe(200);
         expect(Array.isArray(response.body)).toBe(true);
+        expect(response.body.length).toBeGreaterThan(0);
     });
 });
-
 afterAll(async () => {
     await prisma.$disconnect();
 });
