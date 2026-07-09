@@ -12,7 +12,7 @@ on:
       - master
 
 jobs:
-  test:
+  build-and-test:
     runs-on: ubuntu-latest
 
     services:
@@ -33,6 +33,7 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://postgres:123456@localhost:5432/blog
+      PORT: 3000
 
     steps:
 
@@ -42,10 +43,11 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20
+          cache: npm
 
       - name: Instalar dependências
-        run: npm install
+        run: npm ci
 
       - name: Gerar Prisma Client
         run: npx prisma generate

@@ -1,4 +1,4 @@
-version: "3.9"
+
 
 services:
   banco:
@@ -16,6 +16,28 @@ services:
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d blog"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: blog-api
+    restart: always
+
+    depends_on:
+      banco:
+        condition: service_healthy
+
+    ports:
+      - "3000:3000"
+
+    environment:
+      DATABASE_URL: postgresql://postgres:123456@banco:5432/blog
+      PORT: 3000
 
 volumes:
   postgres_data:

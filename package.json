@@ -1,7 +1,7 @@
 {
   "name": "tech-challenge-blog",
   "version": "1.0.0",
-  "description": "API REST para gerenciamento de posts utilizando Node.js, Express, Prisma e PostgreSQL.",
+  "description": "API REST para gerenciamento de posts desenvolvida com Node.js, Express, Prisma ORM e PostgreSQL como solução para o Tech Challenge da Pós Tech FIAP.",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
@@ -11,12 +11,23 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio"
     },
-  "keywords": [],
+  "keywords": [
+  "node",
+  "express",
+  "postgresql",
+  "prisma",
+  "rest-api",
+  "blog",
+  "docker",
+  "jest",
+  "fiap",
+  "tech-challenge"
+],
   "author": "Daniel Romera",
   "license": "ISC",
   "type": "commonjs",
   "engines": {
-    "node": ">=22"
+    "node": ">=20"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
