@@ -2,23 +2,29 @@ const express = require("express");
 const router = express.Router();
 
 const postController = require("../controllers/postController");
+const autenticar = require("../middleware/authMiddleware");
 
-// LISTAR
-router.get("/posts", postController.listar);
 
-// CRIAR
-router.post("/posts", postController.criar);
+// --- ROTAS PÚBLICAS (Acessíveis por Alunos e Professores) ---
 
-// BUSCAR POR TERMO
+// 1. BUSCAR POR TERMO (Deve ficar acima de /posts/:id)
 router.get("/posts/search", postController.buscarPorTermo);
 
-// BUSCAR ID
+// 2. LISTAR POSTS 
+router.get("/posts", postController.listar);
+
+// 3. BUSCAR POR ID
 router.get("/posts/:id", postController.buscar);
 
-// EDITAR
-router.put("/posts/:id", postController.editar);
+// --- ROTAS PRIVADAS (Apenas Docentes Autenticados) ---
 
-// EXCLUIR
-router.delete("/posts/:id", postController.excluir);
+// 4. CRIAR
+router.post("/posts", autenticar, postController.criar);
+
+// 5. EDITAR
+router.put("/posts/:id", autenticar, postController.editar);
+
+// 6. EXCLUIR
+router.delete("/posts/:id", autenticar, postController.excluir);
 
 module.exports = router;

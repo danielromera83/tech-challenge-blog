@@ -26,10 +26,10 @@ jobs:
           - 5432:5432
 
         options: >-
-          --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     env:
       DATABASE_URL: postgresql://postgres:123456@localhost:5432/blog
@@ -47,7 +47,7 @@ jobs:
           cache: npm
 
       - name: Instalar dependências
-        run: npm ci
+        run: npm ci --include=dev
 
       - name: Gerar Prisma Client
         run: npx prisma generate

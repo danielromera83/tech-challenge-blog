@@ -6,23 +6,23 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "jest --coverage",
+    "test": "jest --coverage --forceExit",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio"
-    },
+  },
   "keywords": [
-  "node",
-  "express",
-  "postgresql",
-  "prisma",
-  "rest-api",
-  "blog",
-  "docker",
-  "jest",
-  "fiap",
-  "tech-challenge"
-],
+    "node",
+    "express",
+    "postgresql",
+    "prisma",
+    "rest-api",
+    "blog",
+    "docker",
+    "jest",
+    "fiap",
+    "tech-challenge"
+  ],
   "author": "Daniel Romera",
   "license": "ISC",
   "type": "commonjs",
@@ -42,3 +42,4 @@
     "supertest": "^7.2.2"
   }
 }
+

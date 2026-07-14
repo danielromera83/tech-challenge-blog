@@ -6,7 +6,7 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
 ![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED)
 ![Tests](https://img.shields.io/badge/Tests-Jest-red)
-![Coverage](https://img.shields.io/badge/Coverage-65.85%25-brightgreen)
+![Coverage](https://img.shields.io/badge/Coverage-67.39%25-brightgreen)
 ![CI](https://github.com/danielromera83/tech-challenge-blog/actions/workflows/ci.yml/badge.svg)
 
 API REST desenvolvida como solução para o **Tech Challenge – Fase 2** da Pós Tech em **Full Stack Development (FIAP)**.
@@ -75,6 +75,7 @@ Desenvolver uma API REST para gerenciamento de posts de um blog utilizando boas 
 - [Objetivo](#objetivo)
 - [Características](#características)
 - [Sobre o Projeto](#sobre-o-projeto)
+- [Arquitetura do Sistema e Decisões Técnicas](#-arquitetura-do-sistema-e-decisões-técnicas)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Arquitetura](#arquitetura)
 - [Estrutura do Projeto](#estrutura-do-projeto)
@@ -83,6 +84,7 @@ Desenvolver uma API REST para gerenciamento de posts de um blog utilizando boas 
 - [Executando Localmente](#executando-localmente)
 - [Executando com Docker](#executando-com-docker)
 - [Configuração do Banco de Dados](#configuração-do-banco-de-dados)
+- [Autenticação](#autenticação)
 - [Como Testar a API](#como-testar-a-api)
 - [Endpoints](#endpoints)
 - [Modelo de Dados](#modelo-de-dados)
@@ -118,6 +120,40 @@ Além da implementação da API, o projeto contempla boas práticas de desenvolv
 - Integração Contínua (CI) utilizando GitHub Actions.
 
 O objetivo é disponibilizar uma aplicação organizada, escalável e de fácil manutenção, aplicando conceitos fundamentais de desenvolvimento backend moderno.
+
+---
+
+## Arquitetura do Sistema e Decisões Técnicas
+
+Para atender ao caráter técnico desta fase, a estrutura do sistema foi mapeada seguindo as diretrizes sugeridas para descrição arquitetural:
+
+### 1. Visão Geral e Escopo
+O sistema consiste em uma API REST isolada para o gerenciamento de postagens de um blog escolar. O escopo abrange o recebimento de requisições HTTP, validação de formato de dados, controle de políticas de acesso simplificado (Alunos vs. Docentes) e a persistência em um banco de dados relacional.
+
+### 2. Metas e Restrições da Arquitetura
+- **Desacoplamento:** Separação estrita de responsabilidades para facilitar manutenções isoladas.
+- **Portabilidade:** Garantia de que a aplicação rode identicamente em qualquer ambiente através de containerização.
+- **Confiabilidade:** Cobertura de testes automatizados integrada à esteira de CI, assegurando que modificações não quebrem funcionalidades existentes.
+- **Restrição Tecnológica:** Uso obrigatório do ecossistema Node.js (v20+), Express (v5), Prisma ORM (v7) e PostgreSQL (v16).
+
+### 3. Visão Lógica (Arquitetura em Camadas)
+A aplicação adota a **Layered Architecture (Arquitetura em Camadas)** para segregar o fluxo de dados em quatro níveis independentes:
+- **Camada de Rotas (`Routes`):** Ponto de entrada das requisições. Mapeia os endpoints HTTP e direciona o fluxo, aplicando middlewares de segurança quando necessário.
+- **Camada de Controladores (`Controllers`):** Responsável por interceptar a requisição, validar a presença dos parâmetros obrigatórios e formatar a resposta HTTP (Status Codes e JSON).
+- **Camada de Serviços (`Services`):** Centraliza as regras de negócio e a lógica de processamento da aplicação, servindo de ponte entre o controlador e o banco de dados.
+- **Camada de Dados (`Prisma Client`):** Camada de persistência que abstrai as queries SQL através do mapeamento objeto-relacional (ORM).
+
+### 4. Visão de Processo e Implementação
+As requisições síncronas trafegam de forma linear entre as camadas. O ciclo de vida do processo segue o fluxo: 
+`Cliente HTTP` -> `Middleware (Autenticação)` -> `Rotas` -> `Controller` -> `Service` -> `Prisma Client` -> `PostgreSQL`. 
+
+*Nota: As rotas e o contrato de dados (títulos, conteúdos e autores) estão detalhados na seção [Endpoints](#endpoints) deste documento.*
+
+### 5. Decisões Técnicas e Justificativas
+- **Prisma ORM v7 com Driver PG Nativo:** A escolha pelo Prisma v7 combinado ao pool de conexões do driver `pg` nativo garante alta performance no gerenciamento de conexões assíncronas com o PostgreSQL, além de fornecer type-safety e migrações automatizadas via código (`prisma migrate`).
+- **Segregação de Segurança em Middleware:** A lógica de validação do token foi isolada em um middleware específico (`authMiddleware.js`), permitindo injetar segurança cirurgicamente apenas nas rotas de escrita (`POST`, `PUT`, `DELETE`), mantendo o acesso de leitura livre para os alunos de forma limpa.
+- **Pipeline de CI com Banco Efêmero:** O fluxo do GitHub Actions foi configurado para subir um container PostgreSQL em tempo de execução. Isso garante que os testes de integração rodem contra um banco real e limpo a cada push, simulando perfeitamente o comportamento de produção.
+
 
 ---
 
@@ -341,8 +377,12 @@ docker ps
 Configure o arquivo `.env`:
 
 ```env
+# URL de conexão com o banco de dados PostgreSQL (usado pelo Prisma)
 DATABASE_URL="postgresql://postgres:123456@localhost:5432/blog"
+
+# Porta onde o servidor Express será executado
 PORT=3000
+
 ```
 
 Execute as migrations do Prisma:
@@ -454,6 +494,24 @@ npx prisma migrate reset
 
 ---
 
+## Autenticação
+
+## Autenticação e Controle de Acesso
+
+A API implementa um controle de acesso simplificado para simular as regras do ambiente escolar:
+
+- **Alunos (Leitura Livre):** As rotas de consulta (`GET /posts`, `GET /posts/:id` e `GET /posts/search`) são totalmente **públicas** e não exigem nenhum tipo de autenticação.
+- **Docentes (Ações de Escrita):** Os endpoints de modificação (`POST /posts`, `PUT /posts/:id` e `DELETE /posts/:id`) são **privados**. Eles exigem obrigatoriamente o envio do header HTTP `Authorization` com o token fixo definido para o desafio:
+
+```http
+Authorization: Bearer techchallenge2026
+```
+
+Caso um usuário tente realizar uma ação de escrita sem informar o cabeçalho correto, a API bloqueará a requisição retornando o status `401 Unauthorized`.
+
+
+---
+
 ## Como Testar a API
 
 Após iniciar a aplicação, os endpoints podem ser testados utilizando ferramentas como:
@@ -494,14 +552,16 @@ curl -X POST http://localhost:3000/posts \
 
 A API disponibiliza os seguintes endpoints para gerenciamento dos posts.
 
-| Método | Endpoint | Descrição |
-|---------|----------|-----------|
-| GET | `/posts` | Lista todos os posts |
-| GET | `/posts/:id` | Busca um post por ID |
-| GET | `/posts/search?termo=` | Pesquisa por palavra-chave |
-| POST | `/posts` | Cria um novo post |
-| PUT | `/posts/:id` | Atualiza um post existente |
-| DELETE | `/posts/:id` | Remove um post |
+A tabela abaixo resume os endpoints disponíveis, seus respectivos métodos e os níveis de permissão exigidos:
+
+| Método | Endpoint | Restrição / Acesso | Descrição |
+|---------|----------|---------------------|-----------|
+| **GET** | `/posts` | 🔓 Público (Alunos/Professores) | Lista todos os posts cadastrados |
+| **GET** | `/posts/:id` | 🔓 Público (Alunos/Professores) | Busca um post específico por ID |
+| **GET** | `/posts/search?termo=` | 🔓 Público (Alunos/Professores) | Pesquisa posts por palavra-chave |
+| **POST**| `/posts` | 🔒 Privado (Apenas Docentes) | Cria um novo post no blog |
+| **PUT** | `/posts/:id` | 🔒 Privado (Apenas Docentes) | Atualiza um post existente |
+| **DELETE**| `/posts/:id` | 🔒 Privado (Apenas Docentes) | Remove um post permanentemente |
 
 ---
 
@@ -634,7 +694,7 @@ npm test -- --coverage
 
 Cobertura atual:
 
-**65,85%**
+**67,39%**
 
 > A cobertura pode evoluir conforme novos testes forem adicionados ao projeto.
 
