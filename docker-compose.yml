@@ -39,7 +39,7 @@ services:
       DATABASE_URL: postgresql://postgres:123456@banco:5432/blog
       PORT: 3000
 
-    command: sh -c "npx prisma migrate deploy && npm start"
+    command: sh -c "npx prisma db push --accept-data-loss && npm start"
 
 volumes:
   postgres_data:

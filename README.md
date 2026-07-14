@@ -9,7 +9,7 @@
 ![Coverage](https://img.shields.io/badge/Coverage-67.39%25-brightgreen)
 ![CI](https://github.com/danielromera83/tech-challenge-blog/actions/workflows/ci.yml/badge.svg)
 
-API REST desenvolvida como solução para o **Tech Challenge – Fase 2** da Pós Tech em **Full Stack Development (FIAP)**.
+API REST desenvolvida como solução para o **Tech Challenge – Fase 2** da Pós Tech em **Full Stack Development (FIAP)** seguindo princípios REST, arquitetura em camadas e boas práticas de desenvolvimento backend.
 
 A aplicação implementa um **CRUD completo** para gerenciamento de posts de um blog utilizando **Node.js**, **Express**, **Prisma ORM** e **PostgreSQL**, seguindo uma arquitetura em camadas. O projeto também conta com **Docker**, **Docker Compose**, **testes automatizados** e **Integração Contínua (GitHub Actions)**.
 
@@ -197,6 +197,9 @@ Express
 Routes
     │
     ▼
+Middleware (Autenticação)
+    │
+    ▼
 Controllers
     │
     ▼
@@ -230,28 +233,33 @@ Cada camada possui uma responsabilidade específica.
                  API REST
 
         ┌─────────────────────┐
-        │      Express        │
-        └─────────┬───────────┘
+        │      Express         │
+        └─────────┬────────────┘
                   │
-        ┌─────────▼───────────┐
-        │      Routes         │
-        └─────────┬───────────┘
+        ┌─────────▼────────────┐
+        │       Routes         │
+        └─────────┬────────────┘
                   │
-        ┌─────────▼───────────┐
-        │    Controllers      │
-        └─────────┬───────────┘
+        ┌─────────▼────────────┐
+        │ Authentication       │
+        │    Middleware        │
+        └─────────┬────────────┘
                   │
-        ┌─────────▼───────────┐
-        │      Services       │
-        └─────────┬───────────┘
+        ┌─────────▼────────────┐
+        │    Controllers       │
+        └─────────┬────────────┘
                   │
-        ┌─────────▼───────────┐
-        │    Prisma Client    │
-        └─────────┬───────────┘
+        ┌─────────▼────────────┐
+        │      Services        │
+        └─────────┬────────────┘
                   │
-        ┌─────────▼───────────┐
-        │    PostgreSQL 16    │
-        └─────────────────────┘
+        ┌─────────▼────────────┐
+        │    Prisma Client     │
+        └─────────┬────────────┘
+                  │
+        ┌─────────▼────────────┐
+        │    PostgreSQL 16     │
+        └──────────────────────┘
 ```
 
 ---
@@ -294,6 +302,9 @@ tech-challenge-blog/
 │   ├── controllers/
 │   │   └── postController.js
 │   │
+│   ├── middleware/
+│   │   └── authMiddleware.js
+│   │
 │   ├── prisma/
 │   │   └── client.js
 │   │
@@ -311,12 +322,12 @@ tech-challenge-blog/
 │
 ├── coverage/                         # Relatórios de cobertura (gerado pelo Jest)
 │
-├── .dockerignore                     # Arquivos ignorados na construção da imagem Docker
+├── .dockerignore                     # Arquivos ignorados no build da imagem Docker
 ├── .env                              # Variáveis de ambiente (não versionado)
 ├── .gitignore
 ├── Dockerfile                        # Imagem da aplicação Node.js
 ├── docker-compose.yml                # Orquestra API + PostgreSQL
-├── jest.config.js                    # Configuração do Jest (opcional)
+├── jest.config.js
 ├── package.json
 ├── package-lock.json
 ├── prisma.config.ts                  # Configuração do Prisma
@@ -496,19 +507,27 @@ npx prisma migrate reset
 
 ## Autenticação
 
-## Autenticação e Controle de Acesso
+A API implementa um mecanismo simplificado de autenticação por meio do cabeçalho HTTP `Authorization`, atendendo ao requisito do Tech Challenge para simulação de controle de acesso.
 
-A API implementa um controle de acesso simplificado para simular as regras do ambiente escolar:
-
-- **Alunos (Leitura Livre):** As rotas de consulta (`GET /posts`, `GET /posts/:id` e `GET /posts/search`) são totalmente **públicas** e não exigem nenhum tipo de autenticação.
-- **Docentes (Ações de Escrita):** Os endpoints de modificação (`POST /posts`, `PUT /posts/:id` e `DELETE /posts/:id`) são **privados**. Eles exigem obrigatoriamente o envio do header HTTP `Authorization` com o token fixo definido para o desafio:
+As operações que alteram dados exigem o envio do seguinte cabeçalho:
 
 ```http
 Authorization: Bearer techchallenge2026
 ```
 
-Caso um usuário tente realizar uma ação de escrita sem informar o cabeçalho correto, a API bloqueará a requisição retornando o status `401 Unauthorized`.
+### Rotas protegidas
 
+- `POST /posts`
+- `PUT /posts/:id`
+- `DELETE /posts/:id`
+
+Caso o token não seja informado ou seja inválido, a API retorna:
+
+```http
+401 Unauthorized
+```
+
+Essa implementação simula um mecanismo de autenticação, conforme solicitado no desafio, não realizando autenticação de usuários reais nem controle de perfis.
 
 ---
 
@@ -539,6 +558,7 @@ Criar um novo post:
 ```bash
 curl -X POST http://localhost:3000/posts \
 -H "Content-Type: application/json" \
+-H "Authorization: Bearer techchallenge2026" \
 -d '{
   "titulo":"Primeiro Post",
   "conteudo":"Conteúdo do post",
@@ -552,17 +572,16 @@ curl -X POST http://localhost:3000/posts \
 
 A API disponibiliza os seguintes endpoints para gerenciamento dos posts.
 
-A tabela abaixo resume os endpoints disponíveis, seus respectivos métodos e os níveis de permissão exigidos:
+A tabela abaixo resume os endpoints disponíveis, seus respectivos métodos, a necessidade de autenticação e a descrição de cada operação.
 
-| Método | Endpoint | Restrição / Acesso | Descrição |
-|---------|----------|---------------------|-----------|
-| **GET** | `/posts` | 🔓 Público (Alunos/Professores) | Lista todos os posts cadastrados |
-| **GET** | `/posts/:id` | 🔓 Público (Alunos/Professores) | Busca um post específico por ID |
-| **GET** | `/posts/search?termo=` | 🔓 Público (Alunos/Professores) | Pesquisa posts por palavra-chave |
-| **POST**| `/posts` | 🔒 Privado (Apenas Docentes) | Cria um novo post no blog |
-| **PUT** | `/posts/:id` | 🔒 Privado (Apenas Docentes) | Atualiza um post existente |
-| **DELETE**| `/posts/:id` | 🔒 Privado (Apenas Docentes) | Remove um post permanentemente |
-
+| Método | Endpoint | Autenticação | Descrição |
+|--------|----------|--------------|-----------|
+| GET | `/posts` | Não | Lista todos os posts |
+| GET | `/posts/:id` | Não | Busca um post pelo ID |
+| GET | `/posts/search` | Não | Pesquisa posts por termo |
+| POST | `/posts` | Sim | Cria um novo post |
+| PUT | `/posts/:id` | Sim | Atualiza um post |
+| DELETE | `/posts/:id` | Sim | Remove um post |
 ---
 
 ### GET /posts
@@ -656,6 +675,7 @@ A aplicação possui atualmente a entidade **Post**, responsável pelo armazenam
 | conteudo | String | Conteúdo do post |
 | autor | String | Nome do autor |
 | createdAt | DateTime | Data e hora da criação |
+| updatedAt | DateTime | Data e hora de atualização |
 
 Representação simplificada:
 
@@ -667,6 +687,7 @@ titulo      String
 conteudo    String
 autor       String
 createdAt   DateTime
+updatedAt   DateTime
 ```
 
 ---
@@ -718,6 +739,7 @@ A API retorna códigos HTTP apropriados para cada situação, seguindo boas prá
 | 200 | Requisição realizada com sucesso |
 | 201 | Recurso criado com sucesso |
 | 400 | Requisição inválida ou campos obrigatórios não informados |
+| 401 | Não Autorizado |
 | 404 | Recurso não encontrado |
 | 500 | Erro interno do servidor |
 
@@ -728,6 +750,8 @@ Os principais cenários tratados incluem:
 - pesquisa sem termo informado;
 - tentativa de acesso a posts inexistentes;
 - tratamento de exceções provenientes do Prisma ORM.
+- autenticação obrigatória para rotas protegidas;
+- validação do token Authorization;
 
 ---
 
@@ -834,6 +858,7 @@ Atualmente a API disponibiliza as seguintes funcionalidades:
 - ✅ Orquestração com Docker Compose
 - ✅ Testes automatizados
 - ✅ Integração Contínua (GitHub Actions)
+- ✅ Middleware de autenticação para operações de escrita
 
 ---
 
@@ -841,7 +866,7 @@ Atualmente a API disponibiliza as seguintes funcionalidades:
 
 Como evolução do projeto, estão previstas as seguintes melhorias:
 
-- Implementação de autenticação com JWT;
+- Substituição do mecanismo atual de autenticação simplificada por autenticação JWT;
 - Cadastro e gerenciamento de usuários;
 - Paginação na listagem de posts;
 - Documentação da API utilizando Swagger/OpenAPI;
@@ -882,7 +907,7 @@ Este projeto foi desenvolvido exclusivamente para fins acadêmicos como requisit
 
 **Daniel Romera**
 
-Profissional com sólida experiência no mercado financeira e liderança de equipes, atualmente em transição para a área de Desenvolvimento Full Stack.
+Profissional com sólida experiência no mercado financeiro e liderança de equipes, atualmente em transição para a área de Desenvolvimento Full Stack.
 
 Este projeto foi desenvolvido como parte do Tech Challenge da Pós Tech em Full Stack Development (FIAP), aplicando conceitos de desenvolvimento backend, arquitetura em camadas, bancos de dados relacionais, testes automatizados, Docker e integração contínua.
 

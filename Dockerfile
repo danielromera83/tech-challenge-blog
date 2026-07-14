@@ -2,14 +2,13 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-ENV NODE_ENV=production
-
 COPY package*.json ./
 
-RUN npm ci
+RUN npm ci --include=dev
 
 COPY . .
 
+ENV DATABASE_URL="postgresql://mock:mock@localhost:5432/mock"
 RUN npx prisma generate
 
 EXPOSE 3000
