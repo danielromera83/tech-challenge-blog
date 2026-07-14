@@ -46,14 +46,14 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Instalar dependências
+            - name: Instalar dependências
         run: npm ci --include=dev
 
       - name: Gerar Prisma Client
         run: npx prisma generate
 
-      - name: Aplicar migrations
-        run: npx prisma migrate deploy
+      - name: Sincronizar Estrutura do Banco de Dados
+        run: npx prisma db push
 
       - name: Executar testes
         run: npm test
