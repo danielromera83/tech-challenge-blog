@@ -4,3 +4,4 @@ coverage
 .gitignore
 .env
 README.md
+frontend
