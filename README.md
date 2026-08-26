@@ -1,287 +1,226 @@
-# Tech Challenge Blog API 🚀
+# Tech Challenge Blog — Full Stack 🚀
 
-![Node.js](https://img.shields.io/badge/Node.js-20+-green)
+![Node.js](https://img.shields.io/badge/Node.js-20-green)
+![React](https://img.shields.io/badge/React-19.2.8-61DAFB)
+![Vite](https://img.shields.io/badge/Vite-8.2.2-646CFF)
 ![Express](https://img.shields.io/badge/Express-5.x-blue)
 ![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
 ![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED)
 ![Tests](https://img.shields.io/badge/Tests-Jest-red)
-![Coverage](https://img.shields.io/badge/Coverage-67.39%25-brightgreen)
+![Coverage](https://img.shields.io/badge/Coverage-68.08%25-brightgreen)
 ![CI](https://github.com/danielromera83/tech-challenge-blog/actions/workflows/ci.yml/badge.svg)
 
-API REST desenvolvida como solução para o **Tech Challenge – Fase 2** da Pós Tech em **Full Stack Development (FIAP)** seguindo princípios REST, arquitetura em camadas e boas práticas de desenvolvimento backend.
+Aplicação Full Stack desenvolvida para o **Tech Challenge da Pós Tech em Full Stack Development — FIAP**.
 
-A aplicação implementa um **CRUD completo** para gerenciamento de posts de um blog utilizando **Node.js**, **Express**, **Prisma ORM** e **PostgreSQL**, seguindo uma arquitetura em camadas. O projeto também conta com **Docker**, **Docker Compose**, **testes automatizados** e **Integração Contínua (GitHub Actions)**.
+O projeto evolui a API REST desenvolvida na **Fase 2** e acrescenta, na **Fase 3**, uma interface gráfica construída com **React**, permitindo que alunos consultem conteúdos publicados e que professores autenticados criem, editem e administrem posts.
 
----
-
-## Demonstração
-
-Projeto desenvolvido como requisito avaliativo da Pós Tech FIAP.
-
-Tecnologias utilizadas:
-
-- Node.js
-- Express
-- Prisma ORM
-- PostgreSQL
-- Docker
-- Jest
-- GitHub Actions
+A solução utiliza **React, Vite, React Router, Node.js, Express, Prisma ORM, PostgreSQL, Docker, Nginx, Jest e GitHub Actions**.
 
 ---
 
 ## Status do Projeto
 
-🟢 **Projeto concluído**
+🟢 **Fase 3 concluída e funcional**
 
 ### Recursos implementados
 
+- ✅ Frontend React
+- ✅ Interface responsiva
+- ✅ Navegação com React Router
+- ✅ Listagem de posts
+- ✅ Pesquisa por palavra-chave
+- ✅ Leitura completa de posts
+- ✅ Login simplificado do professor
+- ✅ Rotas protegidas
+- ✅ Criação de posts
+- ✅ Edição de posts
+- ✅ Exclusão de posts
+- ✅ Painel administrativo
 - ✅ API REST
-- ✅ CRUD completo
-- ✅ Arquitetura em camadas
 - ✅ PostgreSQL
 - ✅ Prisma ORM
+- ✅ CORS
 - ✅ Docker
 - ✅ Docker Compose
-- ✅ Dockerfile
-- ✅ Testes automatizados (Jest + Supertest)
-- ✅ Integração Contínua (GitHub Actions)
+- ✅ Nginx
+- ✅ Testes automatizados do backend
+- ✅ ESLint no frontend
+- ✅ Build de produção do frontend
+- ✅ Integração Contínua com GitHub Actions
 
 ---
 
 ## Objetivo
 
-Desenvolver uma API REST para gerenciamento de posts de um blog utilizando boas práticas de desenvolvimento, arquitetura em camadas, ORM Prisma, banco PostgreSQL, testes automatizados e integração contínua.
+Desenvolver uma aplicação Full Stack para gerenciamento de publicações de um blog educacional.
+
+A aplicação permite que:
+
+### Alunos e visitantes
+
+- visualizem todos os posts;
+- pesquisem posts por palavra-chave;
+- acessem o conteúdo completo de uma publicação.
+
+### Professores autenticados
+
+- realizem login;
+- criem novos posts;
+- editem posts existentes;
+- excluam posts;
+- utilizem um painel administrativo.
 
 ---
 
-## Características
+## Arquitetura Geral
 
-- Arquitetura em camadas
-- API REST seguindo boas práticas HTTP
-- Persistência em PostgreSQL
-- Prisma ORM
-- Containerização completa da aplicação
-- Testes automatizados com Jest e Supertest
-- Integração Contínua utilizando GitHub Actions
-
----
-
-## Sumário
-
-- [Demonstração](#demonstração)
-- [Status do Projeto](#status-do-projeto)
-- [Objetivo](#objetivo)
-- [Características](#características)
-- [Sobre o Projeto](#sobre-o-projeto)
-- [Arquitetura do Sistema e Decisões Técnicas](#-arquitetura-do-sistema-e-decisões-técnicas)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Arquitetura](#arquitetura)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Pré-requisitos](#pré-requisitos)
-- [Instalação](#instalação)
-- [Executando Localmente](#executando-localmente)
-- [Executando com Docker](#executando-com-docker)
-- [Configuração do Banco de Dados](#configuração-do-banco-de-dados)
-- [Autenticação](#autenticação)
-- [Como Testar a API](#como-testar-a-api)
-- [Endpoints](#endpoints)
-- [Modelo de Dados](#modelo-de-dados)
-- [Testes](#testes)
-- [Tratamento de Erros](#tratamento-de-erros)
-- [Scripts](#scripts)
-- [Docker](#docker)
-- [Integração Contínua (CI)](#integração-contínua-ci)
-- [Funcionalidades](#funcionalidades)
-- [Melhorias Futuras](#melhorias-futuras)
-- [Relato de Experiências e Desafios Enfrentados](#relato-de-experiências-e-desafios-enfrentados)
-- [Licença](#licença)
-- [Autor](#autor)
-
----
-
-## Sobre o Projeto
-
-O **Tech Challenge Blog API** foi desenvolvido como requisito avaliativo da **Fase 2 da Pós Tech em Full Stack Development (FIAP)**.
-
-A proposta consiste no desenvolvimento de uma **API REST** para gerenciamento de posts de um blog, permitindo realizar operações completas de **CRUD (Create, Read, Update e Delete)**, além de pesquisa por palavras-chave.
-
-O projeto foi construído seguindo uma **arquitetura em camadas (Layered Architecture)**, separando responsabilidades entre rotas, controladores, serviços e acesso ao banco de dados por meio do Prisma ORM.
-
-Além da implementação da API, o projeto contempla boas práticas de desenvolvimento, incluindo:
-
-- Arquitetura organizada em camadas;
-- Persistência de dados com PostgreSQL;
-- Prisma ORM para acesso ao banco;
-- Containerização utilizando Docker;
-- Orquestração com Docker Compose;
-- Testes automatizados com Jest e Supertest;
-- Integração Contínua (CI) utilizando GitHub Actions.
-
-O objetivo é disponibilizar uma aplicação organizada, escalável e de fácil manutenção, aplicando conceitos fundamentais de desenvolvimento backend moderno.
-
----
-
-## Arquitetura do Sistema e Decisões Técnicas
-
-Para atender ao caráter técnico desta fase, a estrutura do sistema foi mapeada seguindo as diretrizes sugeridas para descrição arquitetural:
-
-### 1. Visão Geral e Escopo
-O sistema consiste em uma API REST isolada para o gerenciamento de postagens de um blog escolar. O escopo abrange o recebimento de requisições HTTP, validação de formato de dados, controle de políticas de acesso simplificado (Alunos vs. Docentes) e a persistência em um banco de dados relacional.
-
-### 2. Metas e Restrições da Arquitetura
-- **Desacoplamento:** Separação estrita de responsabilidades para facilitar manutenções isoladas.
-- **Portabilidade:** Garantia de que a aplicação rode identicamente em qualquer ambiente através de containerização.
-- **Confiabilidade:** Cobertura de testes automatizados integrada à esteira de CI, assegurando que modificações não quebrem funcionalidades existentes.
-- **Restrição Tecnológica:** Uso obrigatório do ecossistema Node.js (v20+), Express (v5), Prisma ORM (v7) e PostgreSQL (v16).
-
-### 3. Visão Lógica (Arquitetura em Camadas)
-A aplicação adota a **Layered Architecture (Arquitetura em Camadas)** para segregar o fluxo de dados em quatro níveis independentes:
-- **Camada de Rotas (`Routes`):** Ponto de entrada das requisições. Mapeia os endpoints HTTP e direciona o fluxo, aplicando middlewares de segurança quando necessário.
-- **Camada de Controladores (`Controllers`):** Responsável por interceptar a requisição, validar a presença dos parâmetros obrigatórios e formatar a resposta HTTP (Status Codes e JSON).
-- **Camada de Serviços (`Services`):** Centraliza as regras de negócio e a lógica de processamento da aplicação, servindo de ponte entre o controlador e o banco de dados.
-- **Camada de Dados (`Prisma Client`):** Camada de persistência que abstrai as queries SQL através do mapeamento objeto-relacional (ORM).
-
-### 4. Visão de Processo e Implementação
-As requisições síncronas trafegam de forma linear entre as camadas. O ciclo de vida do processo segue o fluxo: 
-`Cliente HTTP` -> `Middleware (Autenticação)` -> `Rotas` -> `Controller` -> `Service` -> `Prisma Client` -> `PostgreSQL`. 
-
-*Nota: As rotas e o contrato de dados (títulos, conteúdos e autores) estão detalhados na seção [Endpoints](#endpoints) deste documento.*
-
-### 5. Decisões Técnicas e Justificativas
-- **Prisma ORM v7 com Driver PG Nativo:** A escolha pelo Prisma v7 combinado ao pool de conexões do driver `pg` nativo garante alta performance no gerenciamento de conexões assíncronas com o PostgreSQL, além de fornecer type-safety e migrações automatizadas via código (`prisma migrate`).
-- **Segregação de Segurança em Middleware:** A lógica de validação do token foi isolada em um middleware específico (`authMiddleware.js`), permitindo injetar segurança cirurgicamente apenas nas rotas de escrita (`POST`, `PUT`, `DELETE`), mantendo o acesso de leitura livre para os alunos de forma limpa.
-- **Pipeline de CI com Banco Efêmero:** O fluxo do GitHub Actions foi configurado para subir um container PostgreSQL em tempo de execução. Isso garante que os testes de integração rodem contra um banco real e limpo a cada push, simulando perfeitamente o comportamento de produção.
-
-
----
-
-## Tecnologias Utilizadas
-
-As principais tecnologias utilizadas no desenvolvimento deste projeto foram:
-
-| Tecnologia | Finalidade |
-|------------|------------|
-| Node.js 20 | Ambiente de execução JavaScript |
-| Express.js | Framework para construção da API REST |
-| Prisma ORM | ORM para comunicação com o banco de dados |
-| PostgreSQL 16 | Banco de dados relacional |
-| Docker | Containerização da aplicação |
-| Docker Compose | Orquestração dos containers |
-| Jest | Testes automatizados |
-| Supertest | Testes de integração da API |
-| GitHub Actions | Integração Contínua (CI) |
-| Dotenv | Gerenciamento das variáveis de ambiente |
-
----
-
-## Arquitetura
-
-O projeto segue o padrão de **Arquitetura em Camadas (Layered Architecture)**, separando responsabilidades entre cada componente da aplicação.
-
-O fluxo de uma requisição HTTP ocorre conforme o diagrama abaixo.
-
-### Fluxo da Requisição
+A aplicação possui frontend, backend e banco de dados separados.
 
 ```text
-Cliente
+┌──────────────────────────────────┐
+│            Navegador             │
+└───────────────┬──────────────────┘
+                │
+                ▼
+┌──────────────────────────────────┐
+│        Frontend React            │
+│ React + Vite + React Router      │
+│ Porta 5173 (desenvolvimento)     │
+│ Porta 8080 (Docker/Nginx)        │
+└───────────────┬──────────────────┘
+                │ HTTP / REST
+                ▼
+┌──────────────────────────────────┐
+│        Backend Node.js           │
+│        Express REST API          │
+│             :3000                │
+└───────────────┬──────────────────┘
+                │
+                ▼
+┌──────────────────────────────────┐
+│           Prisma ORM             │
+└───────────────┬──────────────────┘
+                │
+                ▼
+┌──────────────────────────────────┐
+│         PostgreSQL 16            │
+│             :5432                │
+└──────────────────────────────────┘
+```
+
+---
+
+## Arquitetura do Frontend
+
+O frontend utiliza **React com componentes funcionais e Hooks**.
+
+```text
+React
+│
+├── Pages
+│   ├── Home
+│   ├── PostDetail
+│   ├── Login
+│   ├── CreatePost
+│   ├── EditPost
+│   └── Admin
+│
+├── Components
+│   ├── Header
+│   ├── PostCard
+│   └── ProtectedRoute
+│
+├── Context
+│   └── Autenticação
+│
+├── Services
+│   └── Comunicação com API
+│
+└── React Router
+    ├── Rotas públicas
+    └── Rotas protegidas
+```
+
+### Fluxo de comunicação
+
+```text
+Página React
+    │
+    ▼
+services/api.js
     │
     ▼
 HTTP Request
     │
     ▼
-Express
+Express Routes
+    │
+    ├── Middleware de autenticação
+    │   somente nas operações protegidas
     │
     ▼
-Routes
+Controller
     │
     ▼
-Middleware (Autenticação)
+Service
     │
     ▼
-Controllers
-    │
-    ▼
-Services
-    │
-    ▼
-Prisma ORM
+Prisma Client
     │
     ▼
 PostgreSQL
-    │
-    ▼
-HTTP Response
-```
-
-Cada camada possui uma responsabilidade específica.
-
-| Camada | Responsabilidade |
-|---------|------------------|
-| Routes | Define os endpoints da API |
-| Controllers | Recebe as requisições HTTP e retorna as respostas |
-| Services | Implementa as regras de negócio |
-| Prisma ORM | Realiza o acesso ao banco de dados |
-| PostgreSQL | Armazena os dados da aplicação |
-
----
-
-### Arquitetura da Aplicação
-
-```text
-                 API REST
-
-        ┌─────────────────────┐
-        │      Express         │
-        └─────────┬────────────┘
-                  │
-        ┌─────────▼────────────┐
-        │       Routes         │
-        └─────────┬────────────┘
-                  │
-        ┌─────────▼────────────┐
-        │ Authentication       │
-        │    Middleware        │
-        └─────────┬────────────┘
-                  │
-        ┌─────────▼────────────┐
-        │    Controllers       │
-        └─────────┬────────────┘
-                  │
-        ┌─────────▼────────────┐
-        │      Services        │
-        └─────────┬────────────┘
-                  │
-        ┌─────────▼────────────┐
-        │    Prisma Client     │
-        └─────────┬────────────┘
-                  │
-        ┌─────────▼────────────┐
-        │    PostgreSQL 16     │
-        └──────────────────────┘
 ```
 
 ---
 
-### Arquitetura com Docker
+## Arquitetura do Backend
 
-A aplicação também pode ser executada utilizando Docker Compose.
+O backend segue uma arquitetura em camadas.
 
-```text
-               Docker Compose
-                     │
-        ┌────────────┴────────────┐
-        │                         │
-        ▼                         ▼
-   API Node.js              PostgreSQL
-        │                         │
-        └────────────┬────────────┘
-                     ▼
-                 Prisma ORM
-```
+### Routes
 
-Essa arquitetura facilita a implantação da aplicação em diferentes ambientes, garantindo maior padronização e portabilidade.
+Responsáveis pelo mapeamento dos endpoints HTTP.
+
+### Middleware
+
+Responsável pela validação do token nas operações protegidas.
+
+### Controllers
+
+Recebem as requisições, validam dados e formatam as respostas HTTP.
+
+### Services
+
+Concentram a lógica de acesso e manipulação dos dados.
+
+### Prisma Client
+
+Realiza a comunicação entre a aplicação e o PostgreSQL.
+
+---
+
+## Tecnologias Utilizadas
+
+| Tecnologia | Finalidade |
+|---|---|
+| React 19.2.8 | Construção da interface |
+| React Router DOM 7.18.2 | Navegação entre páginas |
+| Vite 8.2.2 | Ambiente e build do frontend |
+| CSS | Estilização e responsividade |
+| Context API | Estado de autenticação |
+| ESLint 10.9.0 | Análise estática do frontend |
+| Node.js 20 | Ambiente de execução do backend |
+| Express 5 | API REST |
+| Prisma ORM 7 | Acesso ao banco |
+| PostgreSQL 16 | Banco relacional |
+| CORS | Comunicação entre frontend e API |
+| Jest | Testes automatizados |
+| Supertest | Testes da API |
+| Docker | Containerização |
+| Docker Compose | Orquestração dos serviços |
+| Nginx | Servidor do frontend em produção |
+| GitHub Actions | Integração Contínua |
 
 ---
 
@@ -292,162 +231,210 @@ tech-challenge-blog/
 │
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                    # Pipeline de Integração Contínua
+│       └── ci.yml
+│
+├── frontend/
+│   ├── public/
+│   │
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Header.jsx
+│   │   │   ├── PostCard.jsx
+│   │   │   └── ProtectedRoute.jsx
+│   │   │
+│   │   ├── contexts/
+│   │   │   ├── auth.js
+│   │   │   └── AuthProvider.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Admin.jsx
+│   │   │   ├── CreatePost.jsx
+│   │   │   ├── EditPost.jsx
+│   │   │   ├── Home.jsx
+│   │   │   ├── Login.jsx
+│   │   │   └── PostDetail.jsx
+│   │   │
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   │
+│   ├── .dockerignore
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   ├── package.json
+│   ├── package-lock.json
+│   └── vite.config.js
 │
 ├── prisma/
-│   ├── migrations/                   # Histórico das migrations
-│   └── schema.prisma                 # Modelo do banco de dados
+│   ├── migrations/
+│   └── schema.prisma
 │
 ├── src/
 │   ├── controllers/
 │   │   └── postController.js
-│   │
 │   ├── middleware/
 │   │   └── authMiddleware.js
-│   │
 │   ├── prisma/
 │   │   └── client.js
-│   │
 │   ├── routes/
 │   │   └── postRoutes.js
-│   │
 │   ├── services/
 │   │   └── postService.js
-│   │
 │   ├── tests/
 │   │   └── post.test.js
-│   │
 │   ├── app.js
 │   └── server.js
 │
-├── coverage/                         # Relatórios de cobertura (gerado pelo Jest)
-│
-├── .dockerignore                     # Arquivos ignorados no build da imagem Docker
-├── .env                              # Variáveis de ambiente (não versionado)
-├── .gitignore
-├── Dockerfile                        # Imagem da aplicação Node.js
-├── docker-compose.yml                # Orquestra API + PostgreSQL
-├── jest.config.js
+├── .dockerignore
+├── Dockerfile
+├── docker-compose.yml
 ├── package.json
 ├── package-lock.json
-├── prisma.config.ts                  # Configuração do Prisma
+├── prisma.config.ts
 └── README.md
 ```
 
 ---
 
+## Rotas do Frontend
+
+| Rota | Acesso | Função |
+|---|---|---|
+| `/` | Público | Listagem e pesquisa de posts |
+| `/posts/:id` | Público | Leitura completa do post |
+| `/login` | Público | Login do professor |
+| `/posts/novo` | Protegido | Criação de post |
+| `/posts/:id/editar` | Protegido | Edição de post |
+| `/admin` | Protegido | Administração dos posts |
+
+As rotas administrativas utilizam o componente `ProtectedRoute`.
+
+Usuários não autenticados são redirecionados automaticamente para `/login`.
+
+---
+
+## Autenticação
+
+O projeto utiliza um mecanismo de autenticação **simplificado para fins acadêmicos**.
+
+### Credenciais de demonstração
+
+```text
+E-mail: professor@fiap.com.br
+Senha: fiap2026
+```
+
+Após um login válido, o frontend armazena no `localStorage` o token:
+
+```text
+techchallenge2026
+```
+
+Nas operações protegidas, o serviço HTTP acrescenta:
+
+```http
+Authorization: Bearer techchallenge2026
+```
+
+O backend valida esse token através de `authMiddleware.js`.
+
+### Operações protegidas
+
+- criação de post;
+- edição de post;
+- exclusão de post;
+- acesso às páginas administrativas no frontend.
+
+> **Importante:** essa implementação simula autenticação para fins acadêmicos. As credenciais e o token são estáticos e não devem ser utilizados dessa forma em uma aplicação real de produção.
+
+---
+
+## Endpoints da API
+
+| Método | Endpoint | Autenticação | Descrição |
+|---|---|---|---|
+| GET | `/posts` | Não | Lista todos os posts |
+| GET | `/posts/:id` | Não | Busca um post por ID |
+| GET | `/posts/search?termo=` | Não | Pesquisa posts |
+| POST | `/posts` | Sim | Cria um novo post |
+| PUT | `/posts/:id` | Sim | Atualiza um post |
+| DELETE | `/posts/:id` | Sim | Exclui um post |
+
+### Pesquisa
+
+A pesquisa considera:
+
+- título;
+- conteúdo;
+- autor.
+
+Exemplo:
+
+```http
+GET /posts/search?termo=React
+```
+
+---
+
+## Modelo de Dados
+
+A entidade principal é `Post`.
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| id | Integer | Identificador |
+| titulo | String | Título |
+| conteudo | String | Conteúdo |
+| autor | String | Autor |
+| createdAt | DateTime | Data de criação |
+| updatedAt | DateTime | Data de atualização |
+
+---
+
+# Execução com Docker
+
+Esta é a forma mais simples de executar a aplicação completa.
+
 ## Pré-requisitos
 
-Antes de executar o projeto, certifique-se de possuir os seguintes softwares instalados:
-
-- Node.js 20 LTS
-- npm
 - Docker Desktop
 - Docker Compose
 
-> **Observação:** o PostgreSQL é executado em um container Docker, portanto não é necessário instalá-lo localmente.
-
----
-
-## Instalação
-
-Clone o repositório:
-
-```bash
-git clone https://github.com/danielromera83/tech-challenge-blog.git
-```
-
-Acesse a pasta do projeto:
-
-```bash
-cd tech-challenge-blog
-```
-
-Instale as dependências:
-
-```bash
-npm install
-```
-
----
-
-## Executando Localmente
-
-Após instalar as dependências, inicie o banco de dados PostgreSQL utilizando Docker Compose:
-
-```bash
-docker compose up -d banco
-```
-
-Verifique se o container está em execução:
-
-```bash
-docker ps
-```
-
-Configure o arquivo `.env`:
-
-```env
-# URL de conexão com o banco de dados PostgreSQL (usado pelo Prisma)
-DATABASE_URL="postgresql://postgres:123456@localhost:5432/blog"
-
-# Porta onde o servidor Express será executado
-PORT=3000
-
-```
-
-Execute as migrations do Prisma:
-
-```bash
-npx prisma migrate dev
-```
-
-Gere o Prisma Client:
-
-```bash
-npx prisma generate
-```
-
-Inicie a aplicação:
-
-```bash
-npm start
-```
-
-Ou execute em modo desenvolvimento:
-
-```bash
-npm run dev
-```
-
-A API estará disponível em:
-
-```text
-http://localhost:3000
-```
-
----
-
-## Executando com Docker
-
-A aplicação também pode ser executada totalmente em containers utilizando Docker Compose.
-
-### Construir as imagens e iniciar os containers
-
-```bash
-docker compose up --build
-```
-
-Para executar em segundo plano:
+Na raiz:
 
 ```bash
 docker compose up -d --build
 ```
 
-Verificar os containers em execução:
+Verifique:
 
 ```bash
-docker ps
+docker compose ps
+```
+
+São iniciados três serviços:
+
+| Container | Serviço | Porta |
+|---|---|---|
+| `blog-frontend` | React + Nginx | `8080` |
+| `blog-api` | Node.js + Express | `3000` |
+| `postgres-blog` | PostgreSQL | `5432` |
+
+### Acessos
+
+Frontend:
+
+```text
+http://localhost:8080
+```
+
+API:
+
+```text
+http://localhost:3000
 ```
 
 Parar os containers:
@@ -456,450 +443,427 @@ Parar os containers:
 docker compose down
 ```
 
-A API ficará disponível em:
-
-```text
-http://localhost:3000
-```
-
-O banco PostgreSQL será executado no container:
-
-```text
-postgres-blog
-```
-
 ---
-## Configuração do Banco de Dados
 
-O banco de dados utilizado pela aplicação é o **PostgreSQL 16**.
+# Execução em Desenvolvimento
 
-As migrations são gerenciadas pelo Prisma ORM.
+## Backend
 
-Principais comandos:
-
-Aplicar as migrations:
+Na raiz do projeto:
 
 ```bash
-npx prisma migrate dev
+npm install
 ```
 
-Gerar o Prisma Client:
+Configure `.env`:
+
+```env
+DATABASE_URL="postgresql://postgres:123456@localhost:5432/blog"
+PORT=3000
+```
+
+Inicie somente o PostgreSQL:
+
+```bash
+docker compose up -d banco
+```
+
+Gere o Prisma Client:
 
 ```bash
 npx prisma generate
 ```
 
-Abrir o Prisma Studio:
+Sincronize o banco:
 
 ```bash
-npm run prisma:studio
+npx prisma db push
 ```
 
-Caso seja necessário recriar completamente o banco de dados durante o desenvolvimento:
+Inicie a API:
 
 ```bash
-npx prisma migrate reset
+npm run dev
 ```
 
-> **Atenção:** o comando `migrate reset` remove todos os dados do banco.
-
----
-
-## Autenticação
-
-A API implementa um mecanismo simplificado de autenticação por meio do cabeçalho HTTP `Authorization`, atendendo ao requisito do Tech Challenge para simulação de controle de acesso.
-
-As operações que alteram dados exigem o envio do seguinte cabeçalho:
-
-```http
-Authorization: Bearer techchallenge2026
-```
-
-### Rotas protegidas
-
-- `POST /posts`
-- `PUT /posts/:id`
-- `DELETE /posts/:id`
-
-Caso o token não seja informado ou seja inválido, a API retorna:
-
-```http
-401 Unauthorized
-```
-
-Essa implementação simula um mecanismo de autenticação, conforme solicitado no desafio, não realizando autenticação de usuários reais nem controle de perfis.
-
----
-
-## Como Testar a API
-
-Após iniciar a aplicação, os endpoints podem ser testados utilizando ferramentas como:
-
-- Postman
-- Insomnia
-- cURL
-
-### Exemplo utilizando cURL
-
-Listar todos os posts:
-
-```bash
-curl http://localhost:3000/posts
-```
-
-Buscar um post por ID:
-
-```bash
-curl http://localhost:3000/posts/1
-```
-
-Criar um novo post:
-
-```bash
-curl -X POST http://localhost:3000/posts \
--H "Content-Type: application/json" \
--H "Authorization: Bearer techchallenge2026" \
--d '{
-  "titulo":"Primeiro Post",
-  "conteudo":"Conteúdo do post",
-  "autor":"Daniel Romera"
-}'
-```
-
----
-
-## Endpoints
-
-A API disponibiliza os seguintes endpoints para gerenciamento dos posts.
-
-A tabela abaixo resume os endpoints disponíveis, seus respectivos métodos, a necessidade de autenticação e a descrição de cada operação.
-
-| Método | Endpoint | Autenticação | Descrição |
-|--------|----------|--------------|-----------|
-| GET | `/posts` | Não | Lista todos os posts |
-| GET | `/posts/:id` | Não | Busca um post pelo ID |
-| GET | `/posts/search` | Não | Pesquisa posts por termo |
-| POST | `/posts` | Sim | Cria um novo post |
-| PUT | `/posts/:id` | Sim | Atualiza um post |
-| DELETE | `/posts/:id` | Sim | Remove um post |
----
-
-### GET /posts
-
-Retorna todos os posts cadastrados.
-
----
-
-### GET /posts/:id
-
-Retorna um único post a partir do seu identificador.
-
-Exemplo:
-
-```
-GET /posts/1
-```
-
----
-
-### GET /posts/search?termo=
-
-Pesquisa posts utilizando um termo informado.
-
-A busca é realizada nos campos:
-
-- título
-- conteúdo
-- autor
-
-Exemplo:
-
-```
-GET /posts/search?termo=API
-```
-
----
-
-### POST /posts
-
-Cria um novo post.
-
-Body:
-
-```json
-{
-  "titulo": "API REST",
-  "conteudo": "Primeiro post",
-  "autor": "Daniel Romera"
-}
-```
-
----
-
-### PUT /posts/:id
-
-Atualiza um post existente.
-
-Body:
-
-```json
-{
-  "titulo": "Novo título",
-  "conteudo": "Novo conteúdo",
-  "autor": "Daniel Romera"
-}
-```
-
----
-
-### DELETE /posts/:id
-
-Remove um post utilizando seu identificador.
-
-Exemplo:
-
-```
-DELETE /posts/1
-```
-
----
-
-## Modelo de Dados
-
-A aplicação possui atualmente a entidade **Post**, responsável pelo armazenamento das publicações do blog.
-
-| Campo | Tipo | Descrição |
-|--------|------|-----------|
-| id | Integer | Identificador único do post |
-| titulo | String | Título da publicação |
-| conteudo | String | Conteúdo do post |
-| autor | String | Nome do autor |
-| createdAt | DateTime | Data e hora da criação |
-| updatedAt | DateTime | Data e hora de atualização |
-
-Representação simplificada:
+API:
 
 ```text
-Post
-────────────────────────────
-id          Integer
-titulo      String
-conteudo    String
-autor       String
-createdAt   DateTime
-updatedAt   DateTime
+http://localhost:3000
 ```
+
+---
+
+## Frontend
+
+Em outro terminal:
+
+```bash
+cd frontend
+```
+
+Instale as dependências:
+
+```bash
+npm install
+```
+
+Inicie o Vite:
+
+```bash
+npm run dev
+```
+
+Frontend:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## CORS
+
+O backend utiliza o middleware `cors` para permitir que o frontend executado em uma origem diferente realize chamadas HTTP à API.
+
+Em desenvolvimento:
+
+```text
+React   → localhost:5173
+API     → localhost:3000
+```
+
+Com Docker:
+
+```text
+React/Nginx → localhost:8080
+API         → localhost:3000
+```
+
+---
+
+## Responsividade e Acessibilidade
+
+A interface foi desenvolvida para funcionar em diferentes tamanhos de tela.
+
+Foram realizados testes em:
+
+- desktop;
+- tablet;
+- dispositivos móveis.
+
+A interface utiliza:
+
+- layout responsivo;
+- media queries;
+- inputs e botões adaptáveis;
+- navegação compatível com dispositivos móveis;
+- foco visível para elementos interativos;
+- labels associadas aos formulários;
+- mensagens de erro com `role="alert"`;
+- tamanhos adequados de áreas clicáveis.
 
 ---
 
 ## Testes
 
-O projeto utiliza testes automatizados para validar o funcionamento da API.
+O backend utiliza:
 
-Ferramentas utilizadas:
+- Jest;
+- Supertest.
 
-- Jest
-- Supertest
-
-Executar todos os testes:
+Executar:
 
 ```bash
 npm test
 ```
 
-Executar os testes com relatório de cobertura:
+Resultado validado:
 
-```bash
-npm test -- --coverage
+```text
+Test Suites: 1 passed
+Tests:       6 passed
 ```
 
-Cobertura atual:
+Cobertura observada:
 
-**67,39%**
+```text
+68.08%
+```
 
-> A cobertura pode evoluir conforme novos testes forem adicionados ao projeto.
+---
 
-Atualmente os testes contemplam cenários como:
+## Validação do Frontend
 
-- ✅ Listagem de posts
-- ✅ Busca por ID
-- ✅ Busca por palavra-chave
-- ✅ Validação de campos obrigatórios
-- ✅ Tratamento de post inexistente
-- ✅ Retornos HTTP esperados
+### ESLint
+
+```bash
+cd frontend
+npm run lint
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+O build de produção é gerado em:
+
+```text
+frontend/dist/
+```
+
+---
+
+## Docker do Frontend
+
+O frontend utiliza um **Dockerfile multi-stage**.
+
+### Etapa 1
+
+Node.js é utilizado para:
+
+```text
+npm ci
+npm run build
+```
+
+### Etapa 2
+
+O Nginx serve os arquivos finais gerados pelo Vite.
+
+```text
+React
+  ↓
+Vite Build
+  ↓
+dist/
+  ↓
+Nginx
+  ↓
+Porta 80 no container
+  ↓
+localhost:8080
+```
+
+O `nginx.conf` utiliza:
+
+```nginx
+try_files $uri $uri/ /index.html;
+```
+
+Isso permite que rotas do React Router, como `/admin` e `/posts/:id`, funcionem mesmo quando acessadas diretamente ou após atualização da página.
+
+---
+
+## Docker Compose
+
+O Docker Compose orquestra os três serviços:
+
+```text
+                 Docker Compose
+
+                       │
+       ┌───────────────┼───────────────┐
+       │               │               │
+       ▼               ▼               ▼
+ blog-frontend      blog-api      postgres-blog
+ React/Nginx       Node/Express    PostgreSQL
+     :8080            :3000          :5432
+                         │
+                         ▼
+                     Prisma ORM
+```
+
+---
+
+## Integração Contínua
+
+O projeto utiliza **GitHub Actions**.
+
+O workflow está localizado em:
+
+```text
+.github/workflows/ci.yml
+```
+
+Pode ser executado em:
+
+- push para `main` ou `master`;
+- pull request para `main` ou `master`;
+- execução manual através de `workflow_dispatch`.
+
+O runner utilizado é:
+
+```text
+ubuntu-22.04
+```
+
+### Validações do backend
+
+1. Checkout do código;
+2. Configuração do Node.js 20;
+3. Instalação das dependências;
+4. Geração do Prisma Client;
+5. Sincronização do banco com `prisma db push`;
+6. Execução dos testes Jest.
+
+### Validações do frontend
+
+1. Instalação das dependências;
+2. Execução do ESLint;
+3. Build de produção com Vite.
+
+O pipeline foi validado com sucesso no GitHub Actions.
+
+---
+
+## Scripts do Backend
+
+| Script | Descrição |
+|---|---|
+| `npm start` | Inicia a API |
+| `npm run dev` | Desenvolvimento com Node Watch |
+| `npm test` | Testes com Jest e cobertura |
+| `npm run prisma:generate` | Gera Prisma Client |
+| `npm run prisma:migrate` | Executa migrations |
+| `npm run prisma:studio` | Prisma Studio |
+
+---
+
+## Scripts do Frontend
+
+Executados dentro de `frontend/`.
+
+| Script | Descrição |
+|---|---|
+| `npm run dev` | Inicia Vite |
+| `npm run build` | Gera build |
+| `npm run lint` | Executa ESLint |
+| `npm run preview` | Pré-visualiza o build |
 
 ---
 
 ## Tratamento de Erros
 
-A API retorna códigos HTTP apropriados para cada situação, seguindo boas práticas de desenvolvimento REST.
+A API utiliza códigos HTTP compatíveis com cada cenário.
 
-| Código | Descrição |
-|---------|-----------|
-| 200 | Requisição realizada com sucesso |
-| 201 | Recurso criado com sucesso |
-| 400 | Requisição inválida ou campos obrigatórios não informados |
-| 401 | Não Autorizado |
+| Código | Significado |
+|---|---|
+| 200 | Sucesso |
+| 201 | Recurso criado |
+| 400 | Requisição inválida |
+| 401 | Não autorizado |
 | 404 | Recurso não encontrado |
-| 500 | Erro interno do servidor |
+| 500 | Erro interno |
 
-Os principais cenários tratados incluem:
+O frontend também trata:
 
-- validação de campos obrigatórios;
-- identificação de parâmetros inválidos;
-- pesquisa sem termo informado;
-- tentativa de acesso a posts inexistentes;
-- tratamento de exceções provenientes do Prisma ORM.
-- autenticação obrigatória para rotas protegidas;
-- validação do token Authorization;
-
----
-
-## Scripts
-
-Os principais scripts disponíveis no projeto são:
-
-| Script | Descrição |
-|---------|-----------|
-| `npm start` | Inicia a aplicação |
-| `npm run dev` | Executa a aplicação em modo de desenvolvimento |
-| `npm test` | Executa os testes automatizados com relatório de cobertura |
-| `npm run prisma:generate` | Gera o Prisma Client |
-| `npm run prisma:migrate` | Executa as migrations do banco de dados |
-| `npm run prisma:studio` | Abre o Prisma Studio |
-
----
-
-## Docker
-
-O projeto está preparado para execução utilizando **Docker** e **Docker Compose**, permitindo que a API e o banco de dados sejam executados de forma isolada e padronizada.
-
-### Dockerfile
-
-O `Dockerfile` é responsável por criar a imagem da aplicação Node.js.
-
-A imagem da aplicação é construída automaticamente utilizando o Dockerfile presente na raiz do projeto.
-
-Durante o processo de build são realizadas as seguintes etapas:
-
-- utilização da imagem oficial do Node.js 20;
-- instalação das dependências do projeto;
-- cópia dos arquivos da aplicação;
-- geração do Prisma Client;
-- exposição da porta 3000;
-- inicialização da API.
-
-### Docker Compose
-
-O arquivo `docker-compose.yml` realiza a orquestração dos serviços da aplicação.
-
-Os serviços definidos são:
-
-- **api** — aplicação Node.js
-- **banco** — banco de dados PostgreSQL
-
-Docker Compose
-
-┌───────────────┐
-│   blog-api    │
-└──────┬────────┘
-       │
-       ▼
-┌───────────────┐
-│ postgres-blog │
-└───────────────┘
-
-### .dockerignore
-
-O arquivo `.dockerignore` evita que arquivos desnecessários sejam enviados para o processo de build da imagem Docker, reduzindo o tamanho da imagem e acelerando sua construção.
-
-Entre os itens ignorados estão:
-
-- node_modules
-- coverage
-- .git
-- arquivos de log
-
----
-
-## Integração Contínua (CI)
-
-O projeto utiliza **GitHub Actions** para automatizar a validação do código a cada alteração enviada ao repositório.
-
-A pipeline é executada automaticamente em cada **Push** e **Pull Request** para as branches `main` e `master`.
-
-Durante a execução são realizadas as seguintes etapas:
-
-1. Checkout do código-fonte;
-2. Configuração do ambiente Node.js;
-3. Instalação das dependências;
-4. Geração do Prisma Client;
-5. Aplicação das migrations;
-6. Execução dos testes automatizados.
-
-Esse processo garante que novas alterações sejam validadas antes de serem incorporadas ao projeto.
+- carregamento dos dados;
+- mensagens de erro da API;
+- pesquisas sem resultados;
+- posts inexistentes;
+- credenciais inválidas.
 
 ---
 
 ## Funcionalidades
 
-Atualmente a API disponibiliza as seguintes funcionalidades:
+### Público
 
-- ✅ Cadastro de posts
-- ✅ Listagem de todos os posts
-- ✅ Consulta por ID
-- ✅ Pesquisa por palavra-chave
-- ✅ Atualização de posts
-- ✅ Exclusão de posts
-- ✅ Validação dos dados recebidos
-- ✅ Persistência em PostgreSQL
+- ✅ Visualizar posts
+- ✅ Pesquisar posts
+- ✅ Ler conteúdo completo
+
+### Professor autenticado
+
+- ✅ Login
+- ✅ Logout
+- ✅ Criar post
+- ✅ Editar post
+- ✅ Excluir post
+- ✅ Visualizar painel administrativo
+
+### Infraestrutura
+
+- ✅ PostgreSQL
 - ✅ Prisma ORM
-- ✅ Containerização com Docker
-- ✅ Orquestração com Docker Compose
-- ✅ Testes automatizados
-- ✅ Integração Contínua (GitHub Actions)
-- ✅ Middleware de autenticação para operações de escrita
+- ✅ Docker
+- ✅ Docker Compose
+- ✅ Nginx
+- ✅ CORS
+- ✅ GitHub Actions
+- ✅ Build automatizado
+- ✅ ESLint
+
+---
+
+## Experiências e Desafios Enfrentados
+
+A evolução do projeto para uma solução Full Stack permitiu integrar conceitos de frontend, backend, banco de dados e infraestrutura.
+
+Entre os principais desafios enfrentados estiveram:
+
+- integração do React com uma API REST existente;
+- configuração do CORS entre frontend e backend;
+- utilização do React Router para navegação;
+- implementação de rotas públicas e protegidas;
+- gerenciamento simplificado de autenticação com Context API;
+- integração das operações CRUD à interface;
+- criação de uma interface responsiva;
+- tratamento dos estados de carregamento e erro;
+- configuração do Nginx para suportar React Router;
+- criação de um Dockerfile específico para o frontend;
+- orquestração de frontend, backend e PostgreSQL com Docker Compose;
+- integração das validações do frontend ao GitHub Actions;
+- resolução de questões relacionadas à disponibilidade de runners do GitHub Actions.
+
+O desenvolvimento possibilitou consolidar conhecimentos sobre a comunicação entre diferentes camadas de uma aplicação Full Stack e sobre o ciclo completo de desenvolvimento, testes, containerização e integração contínua.
 
 ---
 
 ## Melhorias Futuras
 
-Como evolução do projeto, estão previstas as seguintes melhorias:
+Possíveis evoluções:
 
-- Substituição do mecanismo atual de autenticação simplificada por autenticação JWT;
-- Cadastro e gerenciamento de usuários;
-- Paginação na listagem de posts;
-- Documentação da API utilizando Swagger/OpenAPI;
-- Validação de dados com bibliotecas específicas;
-- Deploy em ambiente de nuvem (Render, Railway ou AWS);
-- Ampliação da cobertura dos testes automatizados;
-- Pipeline de CD (Continuous Deployment).
+- autenticação JWT;
+- cadastro real de usuários e professores;
+- criptografia de senhas;
+- autorização baseada em perfis;
+- paginação;
+- comentários nas publicações;
+- Swagger/OpenAPI;
+- validação com bibliotecas dedicadas;
+- testes automatizados do frontend;
+- ampliação da cobertura de testes do backend;
+- configuração da URL da API por variáveis de ambiente;
+- deploy em nuvem;
+- Continuous Deployment (CD).
 
 ---
 
-## Relato de Experiências e Desafios Enfrentados
+## Segurança
 
-O desenvolvimento deste projeto proporcionou uma experiência prática na construção de uma API REST utilizando tecnologias modernas do ecossistema Node.js.
+O sistema atual foi criado para fins acadêmicos.
 
-Os principais desafios enfrentados foram:
+O login e o token utilizados na aplicação são simplificados e não representam uma solução de segurança para produção.
 
-- compreensão da arquitetura em camadas (Routes, Controllers, Services e Prisma);
-- configuração inicial do Prisma ORM e gerenciamento das migrations;
-- integração entre Node.js e PostgreSQL;
-- implementação de testes automatizados utilizando Jest e Supertest;
-- containerização da aplicação com Docker e Docker Compose;
-- configuração da pipeline de Integração Contínua utilizando GitHub Actions;
-- elaboração de uma documentação técnica completa e organizada.
+Em um ambiente real seria necessário implementar, entre outros recursos:
 
-Durante o desenvolvimento foi possível consolidar conhecimentos sobre arquitetura de aplicações backend, persistência de dados, testes automatizados, containerização e automação de processos de integração contínua.
-
-Além do aspecto técnico, o projeto contribuiu para o desenvolvimento de boas práticas de organização de código, documentação e versionamento utilizando Git e GitHub.
+- armazenamento seguro de senhas;
+- hashing;
+- tokens JWT;
+- expiração de sessão;
+- controle de usuários;
+- controle de permissões;
+- variáveis de ambiente para segredos.
 
 ---
 
 ## Licença
 
-Este projeto foi desenvolvido exclusivamente para fins acadêmicos como requisito do **Tech Challenge – Fase 2** da Pós Tech em Full Stack Development (FIAP).
+Projeto desenvolvido exclusivamente para fins acadêmicos como parte do **Tech Challenge da Pós Tech em Full Stack Development — FIAP**.
 
 ---
 
@@ -907,9 +871,7 @@ Este projeto foi desenvolvido exclusivamente para fins acadêmicos como requisit
 
 **Daniel Romera**
 
-Profissional com sólida experiência no mercado financeiro e liderança de equipes, atualmente em transição para a área de Desenvolvimento Full Stack.
-
-Este projeto foi desenvolvido como parte do Tech Challenge da Pós Tech em Full Stack Development (FIAP), aplicando conceitos de desenvolvimento backend, arquitetura em camadas, bancos de dados relacionais, testes automatizados, Docker e integração contínua.
+Projeto desenvolvido durante a Pós Tech em Full Stack Development da FIAP.
 
 ### Contato
 
@@ -918,4 +880,4 @@ Este projeto foi desenvolvido como parte do Tech Challenge da Pós Tech em Full 
 
 ---
 
-⭐ Caso este projeto tenha sido útil, considere deixar uma estrela no repositório.
+⭐ Projeto desenvolvido para fins acadêmicos e de aprendizado em Desenvolvimento Full Stack.
