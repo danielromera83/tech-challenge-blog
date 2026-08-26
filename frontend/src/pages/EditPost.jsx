@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { buscarPost, editarPost } from "../services/api";
 
@@ -15,9 +15,6 @@ function EditPost() {
   const [erro, setErro] = useState("");
 
   useEffect(() => {
-    carregarPost();
-  }, [id]);
-
   async function carregarPost() {
     try {
       setCarregando(true);
@@ -34,6 +31,9 @@ function EditPost() {
       setCarregando(false);
     }
   }
+
+  carregarPost();
+}, [id]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -59,58 +59,83 @@ function EditPost() {
   if (carregando) {
     return (
       <main>
-        <p>Carregando post...</p>
+        <p className="status-message">
+          Carregando post...
+        </p>
       </main>
     );
   }
 
   return (
-    <main>
-      <h1>Editar Post</h1>
+    <main className="form-page">
+      <div className="form-page__intro">
+        <span className="section-heading__eyebrow">
+          Edição
+        </span>
 
-      {erro && <p>{erro}</p>}
+        <h1>Editar Post</h1>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="titulo">Título</label>
+        <p>
+          Atualize as informações da publicação e
+          salve as alterações.
+        </p>
+      </div>
 
-          <input
-            id="titulo"
-            type="text"
-            value={titulo}
-            onChange={(event) => setTitulo(event.target.value)}
-            required
-          />
-        </div>
+      <section className="form-card">
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="titulo">Título</label>
 
-        <div>
-          <label htmlFor="autor">Autor</label>
+            <input
+              id="titulo"
+              type="text"
+              value={titulo}
+              onChange={(event) => setTitulo(event.target.value)}
+              required
+            />
+          </div>
 
-          <input
-            id="autor"
-            type="text"
-            value={autor}
-            onChange={(event) => setAutor(event.target.value)}
-            required
-          />
-        </div>
+          <div>
+            <label htmlFor="autor">Autor</label>
 
-        <div>
-          <label htmlFor="conteudo">Conteúdo</label>
+            <input
+              id="autor"
+              type="text"
+              value={autor}
+              onChange={(event) => setAutor(event.target.value)}
+              required
+            />
+          </div>
 
-          <textarea
-            id="conteudo"
-            value={conteudo}
-            onChange={(event) => setConteudo(event.target.value)}
-            rows="10"
-            required
-          />
-        </div>
+          <div>
+            <label htmlFor="conteudo">Conteúdo</label>
 
-        <button type="submit" disabled={salvando}>
-          {salvando ? "Salvando..." : "Salvar Alterações"}
-        </button>
-      </form>
+            <textarea
+              id="conteudo"
+              value={conteudo}
+              onChange={(event) => setConteudo(event.target.value)}
+              rows="10"
+              required
+            />
+          </div>
+
+          {erro && (
+            <p className="form-error" role="alert">
+              {erro}
+            </p>
+          )}
+
+          <div className="form-actions">
+            <button type="submit" disabled={salvando}>
+              {salvando ? "Salvando..." : "Salvar Alterações"}
+            </button>
+
+            <Link to="/admin">
+              Cancelar
+            </Link>
+          </div>
+        </form>
+      </section>
     </main>
   );
 }

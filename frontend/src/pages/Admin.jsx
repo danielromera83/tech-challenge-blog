@@ -9,9 +9,6 @@ function Admin() {
   const [erro, setErro] = useState("");
 
   useEffect(() => {
-    carregarPosts();
-  }, []);
-
   async function carregarPosts() {
     try {
       setCarregando(true);
@@ -25,6 +22,9 @@ function Admin() {
       setCarregando(false);
     }
   }
+
+  carregarPosts();
+}, []);
 
   async function handleExcluir(id) {
     const confirmar = window.confirm(
@@ -50,51 +50,115 @@ function Admin() {
 
   return (
     <main>
-      <h1>Administração</h1>
+      <section className="admin-header">
+        <div>
+          <span className="section-heading__eyebrow">
+            Painel do professor
+          </span>
 
-      <p>Gerencie os posts publicados no blog.</p>
+          <h1>Administração</h1>
 
-      <Link to="/posts/novo">
-        Criar Novo Post
-      </Link>
+          <p>
+            Gerencie as publicações disponíveis para os alunos.
+          </p>
+        </div>
 
-      {carregando && <p>Carregando posts...</p>}
+        <Link
+          className="button-link"
+          to="/posts/novo"
+        >
+          + Criar Novo Post
+        </Link>
+      </section>
 
-      {erro && <p>{erro}</p>}
+      <section className="admin-section">
+        <div className="section-heading">
+          <div>
+            <span className="section-heading__eyebrow">
+              Conteúdos
+            </span>
 
-      {!carregando && !erro && posts.length === 0 && (
-        <p>Nenhum post cadastrado.</p>
-      )}
+            <h2>Posts publicados</h2>
+          </div>
 
-      {!carregando &&
-        posts.map((post) => (
-          <article key={post.id}>
-            <h2>{post.titulo}</h2>
+          {!carregando && !erro && (
+            <span className="posts-count">
+              {posts.length}{" "}
+              {posts.length === 1 ? "post" : "posts"}
+            </span>
+          )}
+        </div>
 
-            <p>
-              <strong>Autor:</strong> {post.autor}
+        {carregando && (
+          <p className="status-message">
+            Carregando posts...
+          </p>
+        )}
+
+        {erro && (
+          <p
+            className="status-message status-message--error"
+            role="alert"
+          >
+            {erro}
+          </p>
+        )}
+
+        {!carregando &&
+          !erro &&
+          posts.length === 0 && (
+            <p className="status-message">
+              Nenhum post cadastrado.
             </p>
+          )}
 
-            <Link to={`/posts/${post.id}`}>
-              Visualizar
-            </Link>
+        {!carregando &&
+          !erro &&
+          posts.length > 0 && (
+            <div className="admin-list">
+              {posts.map((post) => (
+                <article
+                  className="admin-post"
+                  key={post.id}
+                >
+                  <div className="admin-post__content">
+                    <span className="admin-post__author">
+                      {post.autor}
+                    </span>
 
-            {" | "}
+                    <h2>{post.titulo}</h2>
+                  </div>
 
-            <Link to={`/posts/${post.id}/editar`}>
-              Editar
-            </Link>
+                  <div className="admin-post__actions">
+                    <Link
+                      className="admin-action"
+                      to={`/posts/${post.id}`}
+                    >
+                      Visualizar
+                    </Link>
 
-            {" | "}
+                    <Link
+                      className="admin-action"
+                      to={`/posts/${post.id}/editar`}
+                    >
+                      Editar
+                    </Link>
 
-            <button
-              type="button"
-              onClick={() => handleExcluir(post.id)}
-            >
-              Excluir
-            </button>
-          </article>
-        ))}
+                    <button
+                      className="button-danger"
+                      type="button"
+                      onClick={() =>
+                        handleExcluir(post.id)
+                      }
+                    >
+                      Excluir
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+      </section>
     </main>
   );
 }

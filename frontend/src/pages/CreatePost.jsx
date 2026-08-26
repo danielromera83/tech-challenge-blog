@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { criarPost } from "../services/api";
 
@@ -34,52 +34,78 @@ function CreatePost() {
   }
 
   return (
-    <main>
-      <h1>Criar Novo Post</h1>
+    <main className="form-page">
+      <div className="form-page__intro">
+        <span className="section-heading__eyebrow">
+          Nova publicação
+        </span>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="titulo">Título</label>
+        <h1>Criar Novo Post</h1>
 
-          <input
-            id="titulo"
-            type="text"
-            value={titulo}
-            onChange={(event) => setTitulo(event.target.value)}
-            required
-          />
-        </div>
+        <p>
+          Publique um novo conteúdo para os alunos
+          diretamente pelo painel do professor.
+        </p>
+      </div>
 
-        <div>
-          <label htmlFor="autor">Autor</label>
+      <section className="form-card">
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="titulo">Título</label>
 
-          <input
-            id="autor"
-            type="text"
-            value={autor}
-            onChange={(event) => setAutor(event.target.value)}
-            required
-          />
-        </div>
+            <input
+              id="titulo"
+              type="text"
+              placeholder="Digite o título do post"
+              value={titulo}
+              onChange={(event) => setTitulo(event.target.value)}
+              required
+            />
+          </div>
 
-        <div>
-          <label htmlFor="conteudo">Conteúdo</label>
+          <div>
+            <label htmlFor="autor">Autor</label>
 
-          <textarea
-            id="conteudo"
-            value={conteudo}
-            onChange={(event) => setConteudo(event.target.value)}
-            rows="10"
-            required
-          />
-        </div>
+            <input
+              id="autor"
+              type="text"
+              placeholder="Nome do autor"
+              value={autor}
+              onChange={(event) => setAutor(event.target.value)}
+              required
+            />
+          </div>
 
-        {erro && <p>{erro}</p>}
+          <div>
+            <label htmlFor="conteudo">Conteúdo</label>
 
-        <button type="submit" disabled={salvando}>
-          {salvando ? "Publicando..." : "Publicar Post"}
-        </button>
-      </form>
+            <textarea
+              id="conteudo"
+              placeholder="Escreva o conteúdo da publicação..."
+              value={conteudo}
+              onChange={(event) => setConteudo(event.target.value)}
+              rows="10"
+              required
+            />
+          </div>
+
+          {erro && (
+            <p className="form-error" role="alert">
+              {erro}
+            </p>
+          )}
+
+          <div className="form-actions">
+            <button type="submit" disabled={salvando}>
+              {salvando ? "Publicando..." : "Publicar Post"}
+            </button>
+
+            <Link to="/admin">
+              Cancelar
+            </Link>
+          </div>
+        </form>
+      </section>
     </main>
   );
 }

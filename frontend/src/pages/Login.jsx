@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/auth";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -24,36 +24,65 @@ function Login() {
   }
 
   return (
-    <main>
-      <h1>Login do Professor</h1>
+    <main className="form-page">
+      <div className="form-page__intro">
+        <span className="section-heading__eyebrow">
+          Área do professor
+        </span>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">E-mail</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
-        </div>
+        <h1>Acesse sua conta</h1>
 
-        <div>
-          <label htmlFor="senha">Senha</label>
-          <input
-            id="senha"
-            type="password"
-            value={senha}
-            onChange={(event) => setSenha(event.target.value)}
-            required
-          />
-        </div>
+        <p>
+          Faça login para criar, editar e administrar
+          as publicações do blog.
+        </p>
+      </div>
 
-        {erro && <p>{erro}</p>}
+      <section className="form-card">
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="email">E-mail</label>
 
-        <button type="submit">Entrar</button>
-      </form>
+            <input
+              id="email"
+              type="email"
+              placeholder="Digite seu e-mail"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="senha">Senha</label>
+
+            <input
+              id="senha"
+              type="password"
+              placeholder="Digite sua senha"
+              value={senha}
+              onChange={(event) => setSenha(event.target.value)}
+              autoComplete="current-password"
+              required
+            />
+          </div>
+
+          {erro && (
+            <p className="form-error" role="alert">
+              {erro}
+            </p>
+          )}
+
+          <button type="submit">
+            Entrar
+          </button>
+        </form>
+
+        <Link className="form-card__back" to="/">
+          ← Voltar para os posts
+        </Link>
+      </section>
     </main>
   );
 }

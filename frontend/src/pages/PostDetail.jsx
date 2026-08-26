@@ -11,9 +11,6 @@ function PostDetail() {
   const [erro, setErro] = useState("");
 
   useEffect(() => {
-    carregarPost();
-  }, [id]);
-
   async function carregarPost() {
     try {
       setCarregando(true);
@@ -28,10 +25,15 @@ function PostDetail() {
     }
   }
 
+  carregarPost();
+}, [id]);
+
   if (carregando) {
     return (
       <main>
-        <p>Carregando post...</p>
+        <p className="status-message">
+          Carregando post...
+        </p>
       </main>
     );
   }
@@ -39,24 +41,57 @@ function PostDetail() {
   if (erro) {
     return (
       <main>
-        <p>{erro}</p>
-        <Link to="/">Voltar para os posts</Link>
+        <p
+          className="status-message status-message--error"
+          role="alert"
+        >
+          {erro}
+        </p>
+
+        <Link to="/">
+          ← Voltar para os posts
+        </Link>
       </main>
     );
   }
 
+  const dataPublicacao = post.createdAt
+    ? new Date(post.createdAt).toLocaleDateString("pt-BR")
+    : "";
+
   return (
-    <main>
-      <Link to="/">← Voltar para os posts</Link>
+    <main className="post-detail">
+      <Link
+        className="post-detail__back"
+        to="/"
+      >
+        ← Voltar para os posts
+      </Link>
 
-      <article>
-        <h1>{post.titulo}</h1>
+      <article className="post-detail__article">
+        <header className="post-detail__header">
+          <span className="section-heading__eyebrow">
+            Publicação
+          </span>
 
-        <p>
-          <strong>Autor:</strong> {post.autor}
-        </p>
+          <h1>{post.titulo}</h1>
 
-        <p>{post.conteudo}</p>
+          <div className="post-detail__meta">
+            <span>
+              <strong>Autor:</strong> {post.autor}
+            </span>
+
+            {dataPublicacao && (
+              <span>
+                <strong>Publicado em:</strong> {dataPublicacao}
+              </span>
+            )}
+          </div>
+        </header>
+
+        <div className="post-detail__content">
+          <p>{post.conteudo}</p>
+        </div>
       </article>
     </main>
   );

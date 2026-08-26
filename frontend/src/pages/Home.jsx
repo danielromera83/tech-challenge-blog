@@ -53,42 +53,99 @@ function Home() {
 
   return (
     <main>
-      <h1>Blog Tech Challenge</h1>
+      <section className="hero">
+        <span className="hero__tag">
+          Tech Challenge • Full Stack
+        </span>
 
-      <p>Conteúdos publicados pelos professores.</p>
+        <h1>Conteúdo que conecta conhecimento e tecnologia.</h1>
 
-      <form onSubmit={handleSearch}>
-        <label htmlFor="busca">Pesquisar posts</label>
+        <p>
+          Explore os conteúdos publicados pelos professores
+          e encontre rapidamente os assuntos que procura.
+        </p>
 
-        <input
-          id="busca"
-          type="search"
-          placeholder="Digite uma palavra-chave"
-          value={termo}
-          onChange={(event) => setTermo(event.target.value)}
-        />
+        <form
+          className="search-form"
+          onSubmit={handleSearch}
+        >
+          <label
+            className="sr-only"
+            htmlFor="busca"
+          >
+            Pesquisar posts
+          </label>
 
-        <button type="submit">
-          Pesquisar
-        </button>
-      </form>
-
-      {carregando && <p>Carregando posts...</p>}
-
-      {erro && <p>{erro}</p>}
-
-      {!carregando && !erro && posts.length === 0 && (
-        <p>Nenhum post encontrado.</p>
-      )}
-
-      {!carregando &&
-        !erro &&
-        posts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
+          <input
+            id="busca"
+            type="search"
+            placeholder="Pesquisar por título, conteúdo ou autor..."
+            value={termo}
+            onChange={(event) =>
+              setTermo(event.target.value)
+            }
           />
-        ))}
+
+          <button type="submit">
+            Pesquisar
+          </button>
+        </form>
+      </section>
+
+      <section className="posts-section">
+        <div className="section-heading">
+          <div>
+            <span className="section-heading__eyebrow">
+              Publicações
+            </span>
+
+            <h2>Posts recentes</h2>
+          </div>
+
+          {!carregando && !erro && (
+            <span className="posts-count">
+              {posts.length}{" "}
+              {posts.length === 1 ? "post" : "posts"}
+            </span>
+          )}
+        </div>
+
+        {carregando && (
+          <p className="status-message">
+            Carregando posts...
+          </p>
+        )}
+
+        {erro && (
+          <p
+            className="status-message status-message--error"
+            role="alert"
+          >
+            {erro}
+          </p>
+        )}
+
+        {!carregando &&
+          !erro &&
+          posts.length === 0 && (
+            <p className="status-message">
+              Nenhum post encontrado.
+            </p>
+          )}
+
+        {!carregando &&
+          !erro &&
+          posts.length > 0 && (
+            <div className="posts-grid">
+              {posts.map((post) => (
+                <PostCard
+                  key={post.id}
+                  post={post}
+                />
+              ))}
+            </div>
+          )}
+      </section>
     </main>
   );
 }

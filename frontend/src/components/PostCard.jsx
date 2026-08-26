@@ -6,18 +6,29 @@ function PostCard({ post }) {
       ? `${post.conteudo.substring(0, 150)}...`
       : post.conteudo;
 
-  return (
-    <article>
-      <h2>{post.titulo}</h2>
+  const dataPublicacao = post.createdAt
+    ? new Date(post.createdAt).toLocaleDateString("pt-BR")
+    : "";
 
-      <p>
-        <strong>Autor:</strong> {post.autor}
-      </p>
+  return (
+    <article className="post-card">
+      <div className="post-card__meta">
+        <span>{post.autor}</span>
+
+        {dataPublicacao && (
+          <span>{dataPublicacao}</span>
+        )}
+      </div>
+
+      <h2>{post.titulo}</h2>
 
       <p>{descricao}</p>
 
-      <Link to={`/posts/${post.id}`}>
-        Ler post completo
+      <Link
+        className="post-card__link"
+        to={`/posts/${post.id}`}
+      >
+        Ler post completo →
       </Link>
     </article>
   );
