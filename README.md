@@ -1,6 +1,6 @@
 # Tech Challenge Blog — Full Stack 🚀
 
-![Node.js](https://img.shields.io/badge/Node.js-20-green)
+![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20-green)
 ![React](https://img.shields.io/badge/React-19.2.8-61DAFB)
 ![Vite](https://img.shields.io/badge/Vite-8.2.2-646CFF)
 ![Express](https://img.shields.io/badge/Express-5.x-blue)
@@ -8,7 +8,7 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
 ![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED)
 ![Tests](https://img.shields.io/badge/Tests-Jest-red)
-![Coverage](https://img.shields.io/badge/Coverage-68.08%25-brightgreen)
+![Coverage](https://img.shields.io/badge/Coverage-76%25-brightgreen)
 ![CI](https://github.com/danielromera83/tech-challenge-blog/actions/workflows/ci.yml/badge.svg)
 
 Aplicação Full Stack desenvolvida para o **Tech Challenge da Pós Tech em Full Stack Development — FIAP**.
@@ -31,7 +31,7 @@ A solução utiliza **React, Vite, React Router, Node.js, Express, Prisma ORM, P
 - ✅ Listagem de posts
 - ✅ Pesquisa por palavra-chave
 - ✅ Leitura completa de posts
-- ✅ Login simplificado do professor
+- ✅ Autenticação real de usuários com PostgreSQL, bcrypt, JWT e autorização baseada em papéis
 - ✅ Rotas protegidas
 - ✅ Criação de posts
 - ✅ Edição de posts
@@ -157,7 +157,10 @@ HTTP Request
 Express Routes
     │
     ├── Middleware de autenticação
-    │   somente nas operações protegidas
+    │   valida JWT e sessão
+    │
+    ├── Middleware de autorização
+    │   restringe operações ao PROFESSOR
     │
     ▼
 Controller
@@ -184,7 +187,11 @@ Responsáveis pelo mapeamento dos endpoints HTTP.
 
 ### Middleware
 
-Responsável pela validação do token nas operações protegidas.
+Responsável pela autenticação e autorização das operações protegidas.
+
+O middleware `autenticar` valida o JWT armazenado no cookie `HttpOnly`, verifica sua assinatura e expiração e disponibiliza os dados do usuário em `req.user`.
+
+O middleware `autorizarProfessor` verifica se o usuário autenticado possui o papel `PROFESSOR` antes de permitir operações administrativas.
 
 ### Controllers
 
@@ -210,10 +217,13 @@ Realiza a comunicação entre a aplicação e o PostgreSQL.
 | CSS | Estilização e responsividade |
 | Context API | Estado de autenticação |
 | ESLint 10.9.0 | Análise estática do frontend |
-| Node.js 20 | Ambiente de execução do backend |
+| Node.js >= 20 | Ambiente de execução do backend |
 | Express 5 | API REST |
 | Prisma ORM 7 | Acesso ao banco |
 | PostgreSQL 16 | Banco relacional |
+| bcryptjs 3.0.3 | Hash e validação de senhas |
+| jsonwebtoken 9.0.3 | Geração e validação de JWT |
+| cookie-parser 1.4.7 | Leitura do cookie de autenticação |
 | CORS | Comunicação entre frontend e API |
 | Jest | Testes automatizados |
 | Supertest | Testes da API |
@@ -270,25 +280,42 @@ tech-challenge-blog/
 │
 ├── prisma/
 │   ├── migrations/
+│   │   ├── 20260623143608_criar_posts/
+│   │   ├── 20260923114500_reconciliar_posts/
+│   │   ├── 20260923151250_adicionar_usuarios_autenticacao/
+│   │   └── 20260924124552_definir_role_padrao_aluno/
 │   └── schema.prisma
+│
+├── scripts/
+│   └── createProfessor.js
 │
 ├── src/
 │   ├── controllers/
+│   │   ├── authController.js
 │   │   └── postController.js
+│   │
 │   ├── middleware/
 │   │   └── authMiddleware.js
+│   │
 │   ├── prisma/
 │   │   └── client.js
+│   │
 │   ├── routes/
+│   │   ├── authRoutes.js
 │   │   └── postRoutes.js
+│   │
 │   ├── services/
+│   │   ├── authService.js
 │   │   └── postService.js
+│   │
 │   ├── tests/
 │   │   └── post.test.js
+│   │
 │   ├── app.js
 │   └── server.js
 │
 ├── .dockerignore
+├── .env.example
 ├── Dockerfile
 ├── docker-compose.yml
 ├── package.json
@@ -296,6 +323,8 @@ tech-challenge-blog/
 ├── prisma.config.ts
 └── README.md
 ```
+
+O arquivo `.env` contém configurações locais e segredos e, por isso, é ignorado pelo Git. O arquivo `.env.example` serve como modelo seguro das variáveis necessárias.
 
 ---
 
@@ -305,50 +334,156 @@ tech-challenge-blog/
 |---|---|---|
 | `/` | Público | Listagem e pesquisa de posts |
 | `/posts/:id` | Público | Leitura completa do post |
-| `/login` | Público | Login do professor |
-| `/posts/novo` | Protegido | Criação de post |
-| `/posts/:id/editar` | Protegido | Edição de post |
-| `/admin` | Protegido | Administração dos posts |
+| `/login` | Público | Login |
+| `/posts/novo` | PROFESSOR | Criação de post |
+| `/posts/:id/editar` | PROFESSOR | Edição de post |
+| `/admin` | PROFESSOR | Administração dos posts |
 
 As rotas administrativas utilizam o componente `ProtectedRoute`.
 
-Usuários não autenticados são redirecionados automaticamente para `/login`.
+O componente verifica o estado da sessão através do `AuthProvider`.
+
+Quando o usuário não está autenticado, o acesso a uma rota administrativa redireciona para:
+
+```text
+/login
+```
+
+Quando existe uma sessão válida, mas o usuário não possui o papel `PROFESSOR`, o acesso administrativo é bloqueado e o usuário é redirecionado para:
+
+```text
+/
+```
+
+A proteção do frontend melhora a navegação e a experiência do usuário, mas a autorização efetiva também é realizada no backend.
 
 ---
 
 ## Autenticação
 
-O projeto utiliza um mecanismo de autenticação **simplificado para fins acadêmicos**.
+A aplicação utiliza autenticação integrada ao backend, com usuários persistidos no PostgreSQL.
 
-### Credenciais de demonstração
-
-```text
-E-mail: professor@fiap.com.br
-Senha: fiap2026
-```
-
-Após um login válido, o frontend armazena no `localStorage` o token:
+### Fluxo de autenticação
 
 ```text
-techchallenge2026
+Usuário informa e-mail e senha
+        ↓
+POST /auth/login
+        ↓
+Backend consulta o usuário no PostgreSQL
+        ↓
+bcryptjs compara a senha com o hash armazenado
+        ↓
+API gera um JWT assinado
+        ↓
+JWT é enviado em cookie HttpOnly
+        ↓
+Frontend consulta GET /auth/me
+        ↓
+Backend valida o JWT
+        ↓
+Sessão e papel do usuário são disponibilizados ao frontend
 ```
 
-Nas operações protegidas, o serviço HTTP acrescenta:
+### Senhas
+
+As senhas não são armazenadas em texto puro.
+
+O `bcryptjs` é utilizado para gerar e validar hashes de senha.
+
+O professor inicial pode ser criado ou atualizado através do script:
+
+```text
+scripts/createProfessor.js
+```
+
+As credenciais são obtidas das variáveis:
+
+```text
+PROFESSOR_EMAIL
+PROFESSOR_PASSWORD
+```
+
+### JWT e cookie de autenticação
+
+Após um login válido, a API gera um JWT assinado com validade de **1 hora**.
+
+O token contém informações necessárias para identificar o usuário e seu papel de acesso.
+
+O JWT é armazenado no cookie:
+
+```text
+auth_token
+```
+
+O cookie é configurado com `HttpOnly`, impedindo que o JavaScript executado no navegador acesse diretamente o token.
+
+O frontend envia o cookie nas chamadas à API utilizando:
+
+```js
+credentials: "include"
+```
+
+O backend permite o envio de credenciais através da configuração de CORS com:
+
+```js
+credentials: true
+```
+
+### Sessão
+
+A sessão atual é consultada por:
 
 ```http
-Authorization: Bearer techchallenge2026
+GET /auth/me
 ```
 
-O backend valida esse token através de `authMiddleware.js`.
+O logout é realizado por:
 
-### Operações protegidas
+```http
+POST /auth/logout
+```
 
-- criação de post;
-- edição de post;
-- exclusão de post;
-- acesso às páginas administrativas no frontend.
+No logout, o backend remove o cookie de autenticação e o frontend limpa o estado do usuário.
 
-> **Importante:** essa implementação simula autenticação para fins acadêmicos. As credenciais e o token são estáticos e não devem ser utilizados dessa forma em uma aplicação real de produção.
+### Autorização por papel
+
+O sistema possui dois papéis definidos pelo enum `Role`:
+
+```text
+PROFESSOR
+ALUNO
+```
+
+O middleware:
+
+```text
+autenticar
+```
+
+valida o JWT e disponibiliza os dados do usuário em `req.user`.
+
+O middleware:
+
+```text
+autorizarProfessor
+```
+
+permite operações administrativas somente quando:
+
+```text
+role = PROFESSOR
+```
+
+Assim:
+
+```text
+Sem sessão válida          → HTTP 401 Unauthorized
+Usuário ALUNO autenticado  → HTTP 403 Forbidden
+Usuário PROFESSOR          → acesso permitido
+```
+
+As operações de criação, edição e exclusão de posts são protegidas no backend.
 
 ---
 
@@ -356,12 +491,15 @@ O backend valida esse token através de `authMiddleware.js`.
 
 | Método | Endpoint | Autenticação | Descrição |
 |---|---|---|---|
+| POST | `/auth/login` | Não | Autentica o usuário e cria a sessão |
+| GET | `/auth/me` | Sim | Retorna o usuário da sessão atual |
+| POST | `/auth/logout` | Não | Encerra a sessão |
 | GET | `/posts` | Não | Lista todos os posts |
 | GET | `/posts/:id` | Não | Busca um post por ID |
 | GET | `/posts/search?termo=` | Não | Pesquisa posts |
-| POST | `/posts` | Sim | Cria um novo post |
-| PUT | `/posts/:id` | Sim | Atualiza um post |
-| DELETE | `/posts/:id` | Sim | Exclui um post |
+| POST | `/posts` | PROFESSOR | Cria um novo post |
+| PUT | `/posts/:id` | PROFESSOR | Atualiza um post |
+| DELETE | `/posts/:id` | PROFESSOR | Exclui um post |
 
 ### Pesquisa
 
@@ -381,7 +519,9 @@ GET /posts/search?termo=React
 
 ## Modelo de Dados
 
-A entidade principal é `Post`.
+O banco possui as entidades `Post` e `User`, além do enum `Role`.
+
+### Post
 
 | Campo | Tipo | Descrição |
 |---|---|---|
@@ -392,36 +532,116 @@ A entidade principal é `Post`.
 | createdAt | DateTime | Data de criação |
 | updatedAt | DateTime | Data de atualização |
 
+A tabela correspondente no PostgreSQL é:
+
+```text
+posts
+```
+
+### User
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| id | Integer | Identificador |
+| email | String | E-mail único do usuário |
+| password | String | Hash bcrypt da senha |
+| role | Role | Papel de acesso do usuário |
+| createdAt | DateTime | Data de criação |
+| updatedAt | DateTime | Data de atualização |
+
+A tabela correspondente no PostgreSQL é:
+
+```text
+users
+```
+
+### Role
+
+Os papéis disponíveis são:
+
+```text
+PROFESSOR
+ALUNO
+```
+
+`PROFESSOR` possui acesso às funcionalidades administrativas.
+
+`ALUNO` não possui autorização para criar, editar ou excluir posts.
+
 ---
 
-# Execução com Docker
+## Execução com Docker
 
 Esta é a forma mais simples de executar a aplicação completa.
 
-## Pré-requisitos
+### Pré-requisitos
 
 - Docker Desktop
 - Docker Compose
 
-Na raiz:
+### Configuração das variáveis de ambiente
+
+Crie o arquivo `.env` a partir do modelo:
+
+```bash
+cp .env.example .env
+```
+
+Depois configure valores próprios para:
+
+```env
+JWT_SECRET="substitua_por_um_segredo_seguro"
+PROFESSOR_EMAIL="professor@fiap.com.br"
+PROFESSOR_PASSWORD="substitua_por_uma_senha_segura"
+```
+
+O arquivo `.env` é ignorado pelo Git e não deve conter valores que sejam versionados no repositório.
+
+### Subir a aplicação
+
+Na raiz do projeto:
 
 ```bash
 docker compose up -d --build
 ```
 
-Verifique:
-
-```bash
-docker compose ps
-```
-
-São iniciados três serviços:
+O Docker Compose inicia três serviços:
 
 | Container | Serviço | Porta |
 |---|---|---|
 | `blog-frontend` | React + Nginx | `8080` |
 | `blog-api` | Node.js + Express | `3000` |
-| `postgres-blog` | PostgreSQL | `5432` |
+| `postgres-blog` | PostgreSQL 16 | `5432` |
+
+O PostgreSQL utiliza o volume:
+
+```text
+postgres_data
+```
+
+para persistência dos dados.
+
+O serviço da API aguarda o PostgreSQL ficar saudável e executa automaticamente:
+
+```text
+npx prisma migrate deploy
+        ↓
+node scripts/createProfessor.js
+        ↓
+npm start
+```
+
+Dessa forma, ao iniciar os containers:
+
+1. as migrations pendentes são aplicadas;
+2. o professor definido no `.env` é criado ou atualizado;
+3. a API é iniciada.
+
+Verifique o estado dos containers:
+
+```bash
+docker compose ps
+```
 
 ### Acessos
 
@@ -437,7 +657,13 @@ API:
 http://localhost:3000
 ```
 
-Parar os containers:
+Para acompanhar os logs:
+
+```bash
+docker compose logs -f
+```
+
+Para encerrar os containers:
 
 ```bash
 docker compose down
@@ -445,21 +671,43 @@ docker compose down
 
 ---
 
-# Execução em Desenvolvimento
+## Execução em Desenvolvimento
 
-## Backend
+Para executar backend e frontend diretamente no ambiente local, utilize Node.js **20 ou superior**.
 
-Na raiz do projeto:
+O projeto declara:
 
-```bash
-npm install
+```text
+Node.js >= 20
 ```
 
-Configure `.env`:
+O projeto suporta Node.js 20 ou superior. O ambiente de desenvolvimento local foi validado com Node.js 22, o Docker do backend utiliza Node.js 20 e o workflow de CI está configurado para Node.js 22.
+
+### Backend
+
+Na raiz do projeto, instale as dependências:
+
+```bash
+npm ci
+```
+
+Crie o arquivo local de configuração, caso ainda não exista:
+
+```bash
+cp .env.example .env
+```
+
+Configure as variáveis conforme o seu ambiente.
+
+Exemplo:
 
 ```env
 DATABASE_URL="postgresql://postgres:123456@localhost:5432/blog"
 PORT=3000
+JWT_SECRET="substitua_por_um_segredo_seguro"
+PROFESSOR_EMAIL="professor@fiap.com.br"
+PROFESSOR_PASSWORD="substitua_por_uma_senha_segura"
+CORS_ORIGINS="http://localhost:5173,http://localhost:8080"
 ```
 
 Inicie somente o PostgreSQL:
@@ -474,27 +722,53 @@ Gere o Prisma Client:
 npx prisma generate
 ```
 
-Sincronize o banco:
+Aplique as migrations existentes:
 
 ```bash
-npx prisma db push
+npx prisma migrate deploy
 ```
 
-Inicie a API:
+Crie ou atualize o professor configurado no `.env`:
+
+```bash
+node scripts/createProfessor.js
+```
+
+Inicie a API em modo de desenvolvimento:
 
 ```bash
 npm run dev
 ```
 
-API:
+A API ficará disponível em:
 
 ```text
 http://localhost:3000
 ```
 
+#### Desenvolvimento do schema Prisma
+
+Quando for necessário criar uma **nova migration** durante o desenvolvimento, utilize:
+
+```bash
+npm run prisma:migrate
+```
+
+Esse script executa:
+
+```text
+prisma migrate dev
+```
+
+Para ambientes que apenas precisam aplicar migrations já versionadas, utilize:
+
+```bash
+npx prisma migrate deploy
+```
+
 ---
 
-## Frontend
+### Frontend
 
 Em outro terminal:
 
@@ -505,7 +779,7 @@ cd frontend
 Instale as dependências:
 
 ```bash
-npm install
+npm ci
 ```
 
 Inicie o Vite:
@@ -514,7 +788,7 @@ Inicie o Vite:
 npm run dev
 ```
 
-Frontend:
+O frontend ficará disponível em:
 
 ```text
 http://localhost:5173
@@ -522,22 +796,49 @@ http://localhost:5173
 
 ---
 
-## CORS
+### CORS e envio do cookie
 
-O backend utiliza o middleware `cors` para permitir que o frontend executado em uma origem diferente realize chamadas HTTP à API.
+O backend utiliza o middleware `cors` para permitir a comunicação entre o frontend e a API executados em origens diferentes.
+
+Por padrão, são permitidas:
+
+```text
+http://localhost:5173
+http://localhost:8080
+```
+
+Essas origens podem ser configuradas através de:
+
+```text
+CORS_ORIGINS
+```
+
+Como a autenticação utiliza cookie, o backend habilita:
+
+```js
+credentials: true
+```
+
+e o frontend envia as requisições utilizando:
+
+```js
+credentials: "include"
+```
 
 Em desenvolvimento:
 
 ```text
-React   → localhost:5173
-API     → localhost:3000
+React        → localhost:5173
+API          → localhost:3000
+PostgreSQL   → localhost:5432
 ```
 
 Com Docker:
 
 ```text
-React/Nginx → localhost:8080
-API         → localhost:3000
+React/Nginx  → localhost:8080
+API          → localhost:3000
+PostgreSQL   → localhost:5432
 ```
 
 ---
@@ -572,6 +873,21 @@ O backend utiliza:
 - Jest;
 - Supertest.
 
+Os testes automatizados cobrem operações da API, autenticação e autorização.
+
+Entre os cenários validados estão:
+
+- login válido de professor;
+- rejeição de senha inválida;
+- recuperação da sessão através de `/auth/me`;
+- encerramento da sessão com logout;
+- rejeição de operação protegida sem autenticação (`401`);
+- rejeição de operação administrativa para usuário `ALUNO` (`403`);
+- listagem e consulta de posts;
+- pesquisa de posts;
+- validação de dados obrigatórios;
+- criação de post por usuário `PROFESSOR`.
+
 Executar:
 
 ```bash
@@ -582,14 +898,22 @@ Resultado validado:
 
 ```text
 Test Suites: 1 passed
-Tests:       6 passed
+Tests:       12 passed
 ```
 
-Cobertura observada:
+Cobertura geral observada:
 
 ```text
-68.08%
+76%
 ```
+
+Os testes também foram executados com sucesso sobre um banco PostgreSQL vazio após a aplicação de todas as migrations com:
+
+```bash
+npx prisma migrate deploy
+```
+
+Isso valida o funcionamento do histórico completo de migrations em uma instalação limpa.
 
 ---
 
@@ -703,11 +1027,11 @@ ubuntu-22.04
 ### Validações do backend
 
 1. Checkout do código;
-2. Configuração do Node.js 20;
-3. Instalação das dependências;
-4. Geração do Prisma Client;
-5. Sincronização do banco com `prisma db push`;
-6. Execução dos testes Jest.
+2. configuração do Node.js 22;
+3. instalação das dependências;
+4. geração do Prisma Client;
+5. aplicação das migrations com `prisma migrate deploy`;
+6. execução dos testes Jest com cobertura.
 
 ### Validações do frontend
 
@@ -715,7 +1039,7 @@ ubuntu-22.04
 2. Execução do ESLint;
 3. Build de produção com Vite.
 
-O pipeline foi validado com sucesso no GitHub Actions.
+O workflow foi configurado para reproduzir um ambiente limpo com PostgreSQL 16, aplicar as migrations versionadas e executar as validações automatizadas do backend e do frontend.
 
 ---
 
@@ -727,7 +1051,7 @@ O pipeline foi validado com sucesso no GitHub Actions.
 | `npm run dev` | Desenvolvimento com Node Watch |
 | `npm test` | Testes com Jest e cobertura |
 | `npm run prisma:generate` | Gera Prisma Client |
-| `npm run prisma:migrate` | Executa migrations |
+| `npm run prisma:migrate` | Cria e aplica migrations durante o desenvolvimento |
 | `npm run prisma:studio` | Prisma Studio |
 
 ---
@@ -755,6 +1079,7 @@ A API utiliza códigos HTTP compatíveis com cada cenário.
 | 201 | Recurso criado |
 | 400 | Requisição inválida |
 | 401 | Não autorizado |
+| 403 | Usuário autenticado sem permissão para a operação |
 | 404 | Recurso não encontrado |
 | 500 | Erro interno |
 
@@ -809,7 +1134,7 @@ Entre os principais desafios enfrentados estiveram:
 - configuração do CORS entre frontend e backend;
 - utilização do React Router para navegação;
 - implementação de rotas públicas e protegidas;
-- gerenciamento simplificado de autenticação com Context API;
+- evolução da autenticação simulada para autenticação real com PostgreSQL, bcrypt, JWT, cookie HttpOnly e autorização baseada em papéis;
 - integração das operações CRUD à interface;
 - criação de uma interface responsiva;
 - tratamento dos estados de carregamento e erro;
@@ -827,10 +1152,6 @@ O desenvolvimento possibilitou consolidar conhecimentos sobre a comunicação en
 
 Possíveis evoluções:
 
-- autenticação JWT;
-- cadastro real de usuários e professores;
-- criptografia de senhas;
-- autorização baseada em perfis;
 - paginação;
 - comentários nas publicações;
 - Swagger/OpenAPI;
@@ -845,19 +1166,49 @@ Possíveis evoluções:
 
 ## Segurança
 
-O sistema atual foi criado para fins acadêmicos.
+A aplicação utiliza autenticação integrada ao backend com usuários persistidos no PostgreSQL.
 
-O login e o token utilizados na aplicação são simplificados e não representam uma solução de segurança para produção.
+As principais medidas implementadas são:
 
-Em um ambiente real seria necessário implementar, entre outros recursos:
+- senhas armazenadas como hash utilizando `bcryptjs`;
+- autenticação realizada pela API;
+- geração de JWT assinado pelo backend;
+- expiração do JWT após 1 hora;
+- armazenamento do JWT em cookie `HttpOnly`;
+- segredo do JWT definido por variável de ambiente;
+- credenciais não versionadas no Git;
+- validação da sessão no backend;
+- autorização baseada no papel do usuário;
+- operações administrativas restritas ao papel `PROFESSOR`;
+- retorno `401 Unauthorized` para usuários não autenticados;
+- retorno `403 Forbidden` para usuários autenticados sem permissão.
 
-- armazenamento seguro de senhas;
-- hashing;
-- tokens JWT;
-- expiração de sessão;
-- controle de usuários;
-- controle de permissões;
-- variáveis de ambiente para segredos.
+O frontend utiliza o estado retornado pela API para controlar a navegação, mas a proteção efetiva dos recursos ocorre no backend.
+
+O cookie de autenticação utiliza:
+
+```text
+HttpOnly
+SameSite=Lax
+Secure quando NODE_ENV=production
+```
+
+A opção `Secure` exige que a aplicação em produção utilize HTTPS para que o cookie seja enviado pelo navegador.
+
+### Possíveis evoluções de segurança
+
+Para uma aplicação de produção, ainda poderiam ser adicionados recursos como:
+
+- política de complexidade e troca de senha;
+- recuperação de senha;
+- refresh tokens;
+- revogação de sessões;
+- bloqueio ou limitação após tentativas consecutivas de login;
+- rate limiting;
+- proteção CSRF adicional conforme a arquitetura de implantação;
+- auditoria de acessos;
+- gerenciamento administrativo de usuários;
+- níveis adicionais de permissão.
 
 ---
 

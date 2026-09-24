@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
- 
 }
 
 model Post {
@@ -16,4 +15,20 @@ model Post {
   updatedAt DateTime @updatedAt
 
   @@map("posts")
+}
+
+enum Role {
+  PROFESSOR
+  ALUNO
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      Role     @default(ALUNO)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
 }

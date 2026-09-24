@@ -103,16 +103,18 @@ O arquivo `services/api.js` centraliza as requisições HTTP realizadas pelo fro
 |---|---|---|
 | `/` | Público | Lista e pesquisa posts |
 | `/posts/:id` | Público | Leitura completa |
-| `/login` | Público | Login do professor |
-| `/posts/novo` | Protegido | Criação de post |
-| `/posts/:id/editar` | Protegido | Edição de post |
-| `/admin` | Protegido | Administração |
+| `/login` | Público | Login |
+| `/posts/novo` | PROFESSOR | Criação de post |
+| `/posts/:id/editar` | PROFESSOR | Edição de post |
+| `/admin` | PROFESSOR | Administração |
 
-As rotas protegidas utilizam o componente:
+As rotas administrativas utilizam o componente:
 
 ```text
 ProtectedRoute.jsx
 ```
+
+O `ProtectedRoute` verifica o estado da sessão disponibilizado pelo `AuthProvider`.
 
 Usuários não autenticados são redirecionados para:
 
@@ -120,34 +122,82 @@ Usuários não autenticados são redirecionados para:
 /login
 ```
 
+Usuários autenticados sem o papel `PROFESSOR` são redirecionados para:
+
+```text
+/
+```
+
+A validação realizada no frontend controla a navegação e a experiência do usuário. A autorização efetiva das operações administrativas também é realizada pelo backend.
+
 ---
 
 ## Autenticação
 
-A autenticação implementada neste projeto é uma **simulação acadêmica**.
+O frontend utiliza autenticação integrada à API.
 
-Credenciais de demonstração:
-
-```text
-E-mail: professor@fiap.com.br
-Senha: fiap2026
-```
-
-Após o login, o token:
+O fluxo funciona da seguinte forma:
 
 ```text
-techchallenge2026
+Usuário informa e-mail e senha
+        ↓
+POST /auth/login
+        ↓
+API valida as credenciais
+        ↓
+API gera um JWT
+        ↓
+JWT é enviado em cookie HttpOnly
+        ↓
+AuthProvider consulta GET /auth/me
+        ↓
+Usuário e papel são armazenados no estado da aplicação
 ```
 
-é armazenado no `localStorage`.
+O token de autenticação não é armazenado no `localStorage` e não é manipulado diretamente pelo JavaScript do frontend.
 
-O serviço de API utiliza esse token nas operações protegidas:
+O cookie é enviado automaticamente nas requisições através da configuração:
+
+```js
+credentials: "include"
+```
+
+### Estado de autenticação
+
+O `AuthProvider` mantém informações como:
+
+```text
+user
+autenticado
+professor
+carregando
+```
+
+Ao iniciar a aplicação, o frontend consulta:
 
 ```http
-Authorization: Bearer techchallenge2026
+GET /auth/me
 ```
 
-> As credenciais e o token estáticos são utilizados exclusivamente para fins acadêmicos e não representam uma implementação indicada para produção.
+para verificar se já existe uma sessão válida.
+
+O login utiliza:
+
+```http
+POST /auth/login
+```
+
+e o logout utiliza:
+
+```http
+POST /auth/logout
+```
+
+As páginas administrativas somente são liberadas quando o usuário possui o papel:
+
+```text
+PROFESSOR
+```
 
 ---
 
@@ -167,7 +217,21 @@ Arquivo responsável:
 src/services/api.js
 ```
 
-Operações disponíveis:
+O serviço centraliza as chamadas HTTP e envia o cookie de autenticação através de:
+
+```js
+credentials: "include"
+```
+
+### Autenticação
+
+```text
+POST   /auth/login
+GET    /auth/me
+POST   /auth/logout
+```
+
+### Posts
 
 ```text
 GET    /posts
@@ -177,6 +241,16 @@ POST   /posts
 PUT    /posts/:id
 DELETE /posts/:id
 ```
+
+As operações:
+
+```text
+POST
+PUT
+DELETE
+```
+
+exigem usuário autenticado com papel `PROFESSOR`.
 
 ---
 
@@ -197,7 +271,7 @@ cd frontend
 Instale as dependências:
 
 ```bash
-npm install
+npm ci
 ```
 
 Inicie o Vite:
@@ -359,16 +433,26 @@ O workflow está localizado na raiz do projeto:
 
 ## Segurança
 
-O fluxo atual de autenticação foi criado para atender ao contexto acadêmico do Tech Challenge.
+O frontend não armazena o JWT em `localStorage` nem utiliza token estático.
 
-Uma implementação de produção deverá substituir o mecanismo atual por recursos como:
+A autenticação é controlada pelo backend, e o JWT é recebido em cookie `HttpOnly`.
 
-- autenticação real de usuários;
-- senhas com hash;
-- JWT;
-- expiração de sessão;
-- autorização por perfil;
-- armazenamento seguro de segredos.
+No frontend:
+
+- o `AuthProvider` mantém apenas o estado do usuário e da sessão;
+- as requisições utilizam `credentials: "include"`;
+- o `ProtectedRoute` exige sessão válida;
+- as rotas administrativas exigem o papel `PROFESSOR`;
+- o token não é acessado diretamente pelo JavaScript.
+
+A proteção visual do frontend não substitui a autorização do backend. As operações administrativas também são protegidas na API.
+
+Possíveis evoluções incluem:
+
+- configuração da URL da API por variável de ambiente;
+- testes automatizados dos componentes e fluxos de autenticação;
+- tratamento global de expiração de sessão;
+- melhorias adicionais de acessibilidade e feedback ao usuário.
 
 ---
 

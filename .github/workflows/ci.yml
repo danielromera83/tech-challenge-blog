@@ -27,7 +27,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U postgres"
+          --health-cmd "pg_isready -U postgres -d blog"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -35,6 +35,7 @@ jobs:
     env:
       DATABASE_URL: postgresql://postgres:123456@localhost:5432/blog
       PORT: 3000
+      JWT_SECRET: segredo-exclusivo-do-ambiente-de-ci
 
     steps:
       - name: Checkout do código
@@ -43,7 +44,7 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: |
             package-lock.json
@@ -58,8 +59,8 @@ jobs:
       - name: Gerar Prisma Client
         run: npx prisma generate
 
-      - name: Sincronizar estrutura do banco de dados
-        run: npx prisma db push --accept-data-loss
+      - name: Aplicar migrations
+        run: npx prisma migrate deploy
 
       - name: Executar testes do backend
         run: npm test
