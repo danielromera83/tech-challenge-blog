@@ -1,29 +1,56 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AuthContext } from "./auth";
+import {
+  buscarSessao,
+  login as loginApi,
+  logout as logoutApi,
+} from "../services/api";
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => {
-    return localStorage.getItem("token");
-  });
+  const [user, setUser] = useState(null);
+  const [carregando, setCarregando] = useState(true);
 
-  function login(tokenRecebido) {
-    localStorage.setItem("token", tokenRecebido);
-    setToken(tokenRecebido);
+  useEffect(() => {
+    async function verificarSessao() {
+      try {
+        const data = await buscarSessao();
+        setUser(data.user);
+      } catch {
+        setUser(null);
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    verificarSessao();
+  }, []);
+
+  async function login(email, password) {
+    const data = await loginApi(email, password);
+    setUser(data.user);
+
+    return data.user;
   }
 
-  function logout() {
-    localStorage.removeItem("token");
-    setToken(null);
+  async function logout() {
+    try {
+      await logoutApi();
+    } finally {
+      setUser(null);
+    }
   }
 
-  const autenticado = Boolean(token);
+  const autenticado = Boolean(user);
+  const professor = user?.role === "PROFESSOR";
 
   return (
     <AuthContext.Provider
       value={{
-        token,
+        user,
         autenticado,
+        professor,
+        carregando,
         login,
         logout,
       }}

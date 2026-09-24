@@ -7,20 +7,32 @@ function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, logout } = useAuth();
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
-    if (email === "professor@fiap.com.br" && senha === "fiap2026") {
-      login("techchallenge2026");
-      navigate("/admin");
-      return;
-    }
+    setErro("");
+    setEnviando(true);
 
-    setErro("E-mail ou senha inválidos.");
+    try {
+      const user = await login(email, senha);
+
+      if (user.role !== "PROFESSOR") {
+        await logout();
+        setErro("Acesso permitido apenas para professores.");
+        return;
+      }
+
+      navigate("/admin");
+    } catch (error) {
+      setErro(error.message || "Não foi possível realizar o login.");
+    } finally {
+      setEnviando(false);
+    }
   }
 
   return (
@@ -74,8 +86,8 @@ function Login() {
             </p>
           )}
 
-          <button type="submit">
-            Entrar
+          <button type="submit" disabled={enviando}>
+            {enviando ? "Entrando..." : "Entrar"}
           </button>
         </form>
 

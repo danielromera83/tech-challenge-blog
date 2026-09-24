@@ -36,8 +36,17 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:123456@banco:5432/blog
       PORT: 3000
+      JWT_SECRET: ${JWT_SECRET}
+      PROFESSOR_EMAIL: ${PROFESSOR_EMAIL}
+      PROFESSOR_PASSWORD: ${PROFESSOR_PASSWORD}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:8080}
 
-    command: sh -c "npx prisma db push --accept-data-loss && npm start"
+    command: >
+      sh -c "
+      npx prisma migrate deploy &&
+      node scripts/createProfessor.js &&
+      npm start
+      "
 
   frontend:
     build:

@@ -1,20 +1,15 @@
 const API_URL = "http://localhost:3000";
 
 async function request(endpoint, options = {}) {
-  const token = localStorage.getItem("token");
-
   const headers = {
     "Content-Type": "application/json",
     ...options.headers,
   };
 
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers,
+    credentials: "include",
   });
 
   const data = await response.json();
@@ -25,6 +20,30 @@ async function request(endpoint, options = {}) {
 
   return data;
 }
+
+// --- AUTENTICAÇÃO ---
+
+export function login(email, password) {
+  return request("/auth/login", {
+    method: "POST",
+    body: JSON.stringify({
+      email,
+      password,
+    }),
+  });
+}
+
+export function buscarSessao() {
+  return request("/auth/me");
+}
+
+export function logout() {
+  return request("/auth/logout", {
+    method: "POST",
+  });
+}
+
+// --- POSTS ---
 
 export function listarPosts() {
   return request("/posts");
