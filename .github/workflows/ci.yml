@@ -49,6 +49,7 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             frontend/package-lock.json
+            mobile/package-lock.json
 
       # Backend
       - name: Instalar dependências do backend
@@ -77,3 +78,12 @@ jobs:
       - name: Gerar build do frontend
         working-directory: ./frontend
         run: npm run build
+
+      # Mobile
+      - name: Instalar dependências do mobile
+        working-directory: ./mobile
+        run: npm ci
+
+      - name: Validar TypeScript do mobile
+        working-directory: ./mobile
+        run: npx tsc --noEmit --pretty false
