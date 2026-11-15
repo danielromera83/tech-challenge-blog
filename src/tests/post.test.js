@@ -93,30 +93,52 @@ afterAll(async () => {
 
 describe("Autenticação e autorização", () => {
   test("POST /auth/login deve autenticar professor", async () => {
-    const { response } = await autenticarComo(PROFESSOR);
+  const { response } = await autenticarComo(PROFESSOR);
 
-    expect(response.statusCode).toBe(200);
-    expect(response.body.user.email).toBe(PROFESSOR.email);
-    expect(response.body.user.role).toBe("PROFESSOR");
+  expect(response.statusCode).toBe(200);
+  expect(response.body.user.email).toBe(PROFESSOR.email);
+  expect(response.body.user.role).toBe("PROFESSOR");
+  expect(response.body.token).toBeDefined();
+  expect(typeof response.body.token).toBe("string");
 
-      const cookies = response.headers["set-cookie"];
+  const cookies = response.headers["set-cookie"];
 
-    expect(cookies).toBeDefined();
-    expect(cookies[0]).toContain("auth_token=");
-    expect(cookies[0]).toContain("HttpOnly");
+  expect(cookies).toBeDefined();
+  expect(cookies[0]).toContain("auth_token=");
+  expect(cookies[0]).toContain("HttpOnly");
+});
 
-  });
+test("POST /auth/login deve rejeitar senha inválida", async () => {
+  const response = await request(app)
+    .post("/auth/login")
+    .send({
+      email: PROFESSOR.email,
+      password: "senha-incorreta"
+    });
 
-  test("POST /auth/login deve rejeitar senha inválida", async () => {
-    const response = await request(app)
-      .post("/auth/login")
-      .send({
-        email: PROFESSOR.email,
-        password: "senha-incorreta"
-      });
+  expect(response.statusCode).toBe(401);
+  expect(response.body.token).toBeUndefined();
+});
 
-    expect(response.statusCode).toBe(401);
-  });
+test("GET /auth/me deve aceitar token Bearer", async () => {
+  const login = await request(app)
+    .post("/auth/login")
+    .send({
+      email: PROFESSOR.email,
+      password: PROFESSOR.password
+    });
+
+  expect(login.statusCode).toBe(200);
+  expect(login.body.token).toBeDefined();
+
+  const response = await request(app)
+    .get("/auth/me")
+    .set("Authorization", `Bearer ${login.body.token}`);
+
+  expect(response.statusCode).toBe(200);
+  expect(response.body.user.email).toBe(PROFESSOR.email);
+  expect(response.body.user.role).toBe("PROFESSOR");
+});
 
   test("GET /auth/me deve retornar usuário autenticado", async () => {
     const { agent } = await autenticarComo(PROFESSOR);

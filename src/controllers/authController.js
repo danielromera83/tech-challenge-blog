@@ -32,8 +32,9 @@ async function login(req, res) {
 
     return res.json({
       mensagem: "Login realizado com sucesso.",
-      user: resultado.user
-    });
+      user: resultado.user,
+      token: resultado.token
+  });
   } catch (error) {
     console.error(error);
 
