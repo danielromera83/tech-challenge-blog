@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 
 const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/postRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.get("/", (req, res) => {
 });
 
 app.use(authRoutes);
+app.use(userRoutes);
 app.use(postRoutes);
 
 module.exports = app;
