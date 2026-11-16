@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -8,7 +8,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
@@ -27,7 +27,7 @@ export default function ProfessoresScreen() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
 
-  async function carregarProfessores(page: number) {
+  const carregarProfessores = useCallback(async (page: number) => {
     try {
       setCarregando(true);
       setErro('');
@@ -49,11 +49,13 @@ export default function ProfessoresScreen() {
     } finally {
       setCarregando(false);
     }
-  }
-
-  useEffect(() => {
-    carregarProfessores(1);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      carregarProfessores(1);
+    }, [carregarProfessores])
+  );
 
   function handleExcluir(professor: Usuario) {
     Alert.alert(

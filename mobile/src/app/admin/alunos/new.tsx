@@ -34,7 +34,7 @@ export default function NovoAlunoScreen() {
         password,
       });
 
-      router.replace('/admin/alunos');
+      router.back();
     } catch (error) {
       setErro(
         error instanceof Error
@@ -94,7 +94,7 @@ export default function NovoAlunoScreen() {
       </Pressable>
 
       <Pressable
-        onPress={() => router.replace('/admin/alunos')}
+        onPress={() => router.back()}
       >
         <Text style={styles.cancelLink}>
           Cancelar
