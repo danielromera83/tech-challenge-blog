@@ -17,6 +17,8 @@ import {
   type Post,
 } from '@/services/api';
 
+import { obterUsuarioAtual } from '@/services/auth';
+
 export default function HomeScreen() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [termo, setTermo] = useState('');
@@ -65,6 +67,21 @@ export default function HomeScreen() {
     carregarPosts();
   }, []);
 
+  async function abrirAreaProfessor() {
+    try {
+      const usuario = await obterUsuarioAtual();
+
+      if (usuario.role === 'PROFESSOR') {
+        router.push('/admin');
+        return;
+      }
+
+      router.push('/login');
+    } catch {
+      router.push('/login');
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -77,7 +94,7 @@ export default function HomeScreen() {
 
         <Pressable
           style={styles.professorButton}
-          onPress={() => router.push('/login')}
+          onPress={abrirAreaProfessor}
         >
           <Text style={styles.professorButtonText}>
             Área do Professor

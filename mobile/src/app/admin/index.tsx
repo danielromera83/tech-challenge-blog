@@ -120,14 +120,15 @@ export default function AdminScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.title}>Área do Professor</Text>
-
-          <Text style={styles.email}>
-            {usuario.email}
+      <View style={styles.topActions}>
+        <Pressable
+          style={styles.homeButton}
+          onPress={() => router.replace('/')}
+        >
+          <Text style={styles.homeButtonText}>
+            Home
           </Text>
-        </View>
+        </Pressable>
 
         <Pressable
           style={styles.logoutButton}
@@ -139,6 +140,16 @@ export default function AdminScreen() {
         </Pressable>
       </View>
 
+      <View style={styles.header}>
+        <Text style={styles.title}>
+          Professor autenticado
+        </Text>
+
+        <Text style={styles.email}>
+          {usuario.email}
+        </Text>
+      </View>
+
       <Pressable
         style={styles.newButton}
         onPress={() => router.push('/admin/posts/new')}
@@ -147,25 +158,28 @@ export default function AdminScreen() {
           + Novo post
         </Text>
       </Pressable>
-    <Pressable
+
+      <Pressable
         style={styles.managementButton}
         onPress={() => router.push('/admin/professores')}
-    >
+      >
         <Text style={styles.managementButtonText}>
-            Gerenciar professores
+          Gerenciar professores
         </Text>
-    </Pressable>
-        <Text style={styles.sectionTitle}>
-            Gerenciar posts
-        </Text>
-    <Pressable
+      </Pressable>
+
+      <Pressable
         style={styles.managementButton}
         onPress={() => router.push('/admin/alunos')}
-    >
+      >
         <Text style={styles.managementButtonText}>
           Gerenciar alunos
         </Text>
-    </Pressable>
+      </Pressable>
+
+      <Text style={styles.sectionTitle}>
+        Gerenciar posts
+      </Text>
       {erro ? (
         <Text style={styles.error}>{erro}</Text>
       ) : null}
@@ -236,24 +250,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8FAFC',
   },
   header: {
-    marginTop: 20,
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    marginTop: 12,
+    marginBottom: 4,
   },
   title: {
-    fontSize: 28,
+    fontSize: 18,
     fontWeight: '700',
+    textAlign: 'center',
     color: '#111827',
   },
   email: {
-    marginTop: 5,
+    marginTop: 6,
     fontSize: 13,
+    textAlign: 'center',
     color: '#6B7280',
   },
   logoutButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    minWidth: 72,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    alignItems: 'center',
     borderRadius: 10,
     backgroundColor: '#DC2626',
   },
@@ -275,7 +292,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   sectionTitle: {
-    marginTop: 28,
+    marginTop: 24,
     fontSize: 20,
     fontWeight: '700',
     color: '#111827',
@@ -343,16 +360,34 @@ const styles = StyleSheet.create({
     color: '#6B7280',
   },
   managementButton: {
-  marginTop: 12,
-  height: 48,
-  alignItems: 'center',
-  justifyContent: 'center',
-  borderRadius: 12,
-  backgroundColor: '#111827',
-},
-managementButtonText: {
-  color: '#FFFFFF',
-  fontSize: 15,
-  fontWeight: '700',
-},
+    marginTop: 12,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
+    backgroundColor: '#111827',
+  },
+  managementButtonText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  homeButton: {
+    minWidth: 72,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    alignItems: 'center',
+    borderRadius: 10,
+    backgroundColor: '#111827',
+  },
+  homeButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  topActions: {
+    marginTop: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
 });

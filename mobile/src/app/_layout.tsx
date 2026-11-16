@@ -17,6 +17,21 @@ export default function RootLayout() {
           headerBackTitle: 'Voltar',
         }}
       />
+
+      <Stack.Screen
+        name="login"
+        options={{
+          title: 'Acesso do Professor',
+          headerBackTitle: 'Voltar',
+        }}
+      />
+
+      <Stack.Screen
+        name="admin"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

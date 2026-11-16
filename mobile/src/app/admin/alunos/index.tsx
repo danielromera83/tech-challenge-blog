@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -8,7 +8,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
@@ -27,7 +27,7 @@ export default function AlunosScreen() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
 
-  async function carregarAlunos(page: number) {
+  const carregarAlunos = useCallback(async (page: number) => {
     try {
       setCarregando(true);
       setErro('');
@@ -49,12 +49,13 @@ export default function AlunosScreen() {
     } finally {
       setCarregando(false);
     }
-  }
-
-  useEffect(() => {
-    carregarAlunos(1);
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      carregarAlunos(1);
+    }, [carregarAlunos])
+  );
   function handleExcluir(aluno: Usuario) {
     Alert.alert(
       'Excluir aluno',
@@ -186,7 +187,7 @@ export default function AlunosScreen() {
               style={[
                 styles.pageButton,
                 pagina >= totalPaginas &&
-                  styles.disabledButton,
+                styles.disabledButton,
               ]}
               disabled={pagina >= totalPaginas}
               onPress={() =>

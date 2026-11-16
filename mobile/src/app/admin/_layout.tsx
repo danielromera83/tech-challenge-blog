@@ -1,7 +1,6 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import {
   Stack,
-  usePathname,
   useRouter,
 } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -13,7 +12,6 @@ import {
 
 export default function AdminLayout() {
   const router = useRouter();
-  const pathname = usePathname();
 
   const [validando, setValidando] = useState(true);
 
@@ -51,7 +49,7 @@ export default function AdminLayout() {
     return () => {
       ativo = false;
     };
-  }, [pathname, router]);
+  }, [router]);
 
   if (validando) {
     return (
@@ -67,7 +65,6 @@ export default function AdminLayout() {
         name="index"
         options={{ title: 'Área do Professor' }}
       />
-
       <Stack.Screen
         name="posts/new"
         options={{ title: 'Novo post' }}
@@ -80,7 +77,10 @@ export default function AdminLayout() {
 
       <Stack.Screen
         name="professores/index"
-        options={{ title: 'Professores' }}
+        options={{
+          title: 'Professores',
+          headerBackTitle: 'Área do Professor',
+        }}
       />
 
       <Stack.Screen
@@ -95,7 +95,10 @@ export default function AdminLayout() {
 
       <Stack.Screen
         name="alunos/index"
-        options={{ title: 'Alunos' }}
+        options={{
+          title: 'Alunos',
+          headerBackTitle: 'Área do Professor',
+        }}
       />
 
       <Stack.Screen

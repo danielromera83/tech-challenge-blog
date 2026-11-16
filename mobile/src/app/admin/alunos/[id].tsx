@@ -76,7 +76,7 @@ export default function EditarAlunoScreen() {
         ...(password ? { password } : {}),
       });
 
-      router.replace('/admin/alunos');
+      router.back();
     } catch (error) {
       setErro(
         error instanceof Error
@@ -142,7 +142,7 @@ export default function EditarAlunoScreen() {
       </Pressable>
 
       <Pressable
-        onPress={() => router.replace('/admin/alunos')}
+        onPress={() => router.back()}
       >
         <Text style={styles.cancelLink}>
           Cancelar
