@@ -229,7 +229,7 @@ O aplicativo Mobile utiliza autenticação por Bearer Token:
 - Login realizado pela API;
 - Token JWT retornado pelo backend;
 - Armazenamento no dispositivo com expo-secure-store;
-- Envio do token no cabeçalho Authorization: Bearer <token>;
+- Envio do token no cabeçalho Authorization: Bearer JWT;
 - Recuperação e exclusão do token durante o ciclo de autenticação.
 
 ### Autorização por papel
