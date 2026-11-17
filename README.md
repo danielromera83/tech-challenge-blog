@@ -635,7 +635,7 @@ A validação manual foi realizada no simulador iOS e contemplou:
 - Criação, edição e exclusão de posts;
 - Listagem, cadastro, edição e exclusão de professores;
 - Listagem, cadastro, edição e exclusão de alunos;
-- Navegação paginada nas listagens administrativas;
+- Exibição dos controles e indicadores de paginação nas listagens administrativas;
 - Retorno à Home.
 
 A validação manual no simulador é complementar às verificações automatizadas configuradas no GitHub Actions.
