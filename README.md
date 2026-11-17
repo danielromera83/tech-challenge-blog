@@ -1,1230 +1,686 @@
 # Tech Challenge Blog — Full Stack 🚀
 
 ![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20-green)
-![React](https://img.shields.io/badge/React-19.2.8-61DAFB)
-![Vite](https://img.shields.io/badge/Vite-8.2.2-646CFF)
+![React Web](https://img.shields.io/badge/React_Web-19.2.8-61DAFB)
+![React Native](https://img.shields.io/badge/React_Native-0.86.3-61DAFB)
+![Expo](https://img.shields.io/badge/Expo-SDK_57-000020)
 ![Express](https://img.shields.io/badge/Express-5.x-blue)
-![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748)
+![Prisma](https://img.shields.io/badge/Prisma-7.x-2D3748)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
 ![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED)
 ![Tests](https://img.shields.io/badge/Tests-Jest-red)
-![Coverage](https://img.shields.io/badge/Coverage-76%25-brightgreen)
 ![CI](https://github.com/danielromera83/tech-challenge-blog/actions/workflows/ci.yml/badge.svg)
 
 Aplicação Full Stack desenvolvida para o **Tech Challenge da Pós Tech em Full Stack Development — FIAP**.
 
-O projeto evolui a API REST desenvolvida na **Fase 2** e acrescenta, na **Fase 3**, uma interface gráfica construída com **React**, permitindo que alunos consultem conteúdos publicados e que professores autenticados criem, editem e administrem posts.
+O projeto reúne uma API REST, uma aplicação Web e um aplicativo Mobile. As interfaces Web e Mobile compartilham o mesmo backend e a mesma base de dados, mantendo as regras de negócio, autenticação, autorização e persistência centralizadas na API.
 
-A solução utiliza **React, Vite, React Router, Node.js, Express, Prisma ORM, PostgreSQL, Docker, Nginx, Jest e GitHub Actions**.
-
----
-
-## Status do Projeto
-
-🟢 **Fase 3 concluída e funcional**
-
-### Recursos implementados
-
-- ✅ Frontend React
-- ✅ Interface responsiva
-- ✅ Navegação com React Router
-- ✅ Listagem de posts
-- ✅ Pesquisa por palavra-chave
-- ✅ Leitura completa de posts
-- ✅ Autenticação real de usuários com PostgreSQL, bcrypt, JWT e autorização baseada em papéis
-- ✅ Rotas protegidas
-- ✅ Criação de posts
-- ✅ Edição de posts
-- ✅ Exclusão de posts
-- ✅ Painel administrativo
-- ✅ API REST
-- ✅ PostgreSQL
-- ✅ Prisma ORM
-- ✅ CORS
-- ✅ Docker
-- ✅ Docker Compose
-- ✅ Nginx
-- ✅ Testes automatizados do backend
-- ✅ ESLint no frontend
-- ✅ Build de produção do frontend
-- ✅ Integração Contínua com GitHub Actions
+**Fases documentadas neste repositório:**
+- **Fase 2 — Backend:** API REST, persistência e operações de gerenciamento.
+- **Fase 3 — Web:** interface com React para consulta de publicações e administração de posts.
+- **Fase 4 — Mobile:** aplicativo com React Native e Expo, integrado à API para consulta de posts e gerenciamento de posts, professores e alunos.
 
 ---
 
-## Objetivo
+## Status do projeto
 
-Desenvolver uma aplicação Full Stack para gerenciamento de publicações de um blog educacional.
+🟢 **Fase 4 implementada — aplicativo Mobile integrado e validado manualmente no simulador iOS.**
 
-A aplicação permite que:
+O workflow de Integração Contínua está configurado para executar testes do backend, validações e build do frontend Web e verificação de tipos do Mobile. O resultado de cada execução pode ser consultado na aba Actions do GitHub.
 
-### Alunos e visitantes
+### Funcionalidades disponíveis
 
-- visualizem todos os posts;
-- pesquisem posts por palavra-chave;
-- acessem o conteúdo completo de uma publicação.
+**Área pública — Web e Mobile**
+- Listagem de publicações;
+- Pesquisa de posts por palavra-chave;
+- Visualização do conteúdo completo de uma publicação.
 
-### Professores autenticados
+**Área administrativa — Web**
+- Login de professor;
+- Painel administrativo;
+- Criação, edição e exclusão de posts.
 
-- realizem login;
-- criem novos posts;
-- editem posts existentes;
-- excluam posts;
-- utilizem um painel administrativo.
+**Área administrativa — Mobile**
+- Login e logout de professor;
+- Criação, edição e exclusão de posts;
+- Listagem, cadastro, edição e exclusão de professores;
+- Listagem, cadastro, edição e exclusão de alunos;
+- Paginação nas listagens de professores e alunos.
 
----
-
-## Arquitetura Geral
-
-A aplicação possui frontend, backend e banco de dados separados.
-
-```text
-┌──────────────────────────────────┐
-│            Navegador             │
-└───────────────┬──────────────────┘
-                │
-                ▼
-┌──────────────────────────────────┐
-│        Frontend React            │
-│ React + Vite + React Router      │
-│ Porta 5173 (desenvolvimento)     │
-│ Porta 8080 (Docker/Nginx)        │
-└───────────────┬──────────────────┘
-                │ HTTP / REST
-                ▼
-┌──────────────────────────────────┐
-│        Backend Node.js           │
-│        Express REST API          │
-│             :3000                │
-└───────────────┬──────────────────┘
-                │
-                ▼
-┌──────────────────────────────────┐
-│           Prisma ORM             │
-└───────────────┬──────────────────┘
-                │
-                ▼
-┌──────────────────────────────────┐
-│         PostgreSQL 16            │
-│             :5432                │
-└──────────────────────────────────┘
-```
+**Backend e infraestrutura**
+- API REST com Node.js e Express;
+- Persistência PostgreSQL com Prisma ORM;
+- Autenticação com JWT;
+- Autorização baseada em papéis (PROFESSOR e ALUNO);
+- Compatibilidade com sessão Web por cookie e autenticação Mobile por Bearer Token;
+- Docker e Docker Compose;
+- Testes automatizados com Jest e Supertest;
+- Integração Contínua com GitHub Actions.
 
 ---
 
-## Arquitetura do Frontend
+## Arquitetura geral
 
-O frontend utiliza **React com componentes funcionais e Hooks**.
+As aplicações Web e Mobile consomem a mesma API REST. A API concentra a autenticação, autorização, regras de negócio e acesso ao banco de dados.
 
-```text
-React
-│
-├── Pages
-│   ├── Home
-│   ├── PostDetail
-│   ├── Login
-│   ├── CreatePost
-│   ├── EditPost
-│   └── Admin
-│
-├── Components
-│   ├── Header
-│   ├── PostCard
-│   └── ProtectedRoute
-│
-├── Context
-│   └── Autenticação
-│
-├── Services
-│   └── Comunicação com API
-│
-└── React Router
-    ├── Rotas públicas
-    └── Rotas protegidas
-```
+    ┌──────────────────────┐       ┌────────────────────────┐
+    │    Aplicação Web     │       │    Aplicativo Mobile   │
+    │ React + Vite         │       │ React Native + Expo    │
+    │ React Router         │       │ Expo Router            │
+    └──────────┬───────────┘       └────────────┬───────────┘
+               │                                │
+               └──────────────┬─────────────────┘
+                              │ HTTP / REST
+                              ▼
+                 ┌────────────────────────┐
+                 │      Backend API       │
+                 │    Node.js + Express   │
+                 │       Porta 3000       │
+                 └────────────┬───────────┘
+                              │
+                              ▼
+                 ┌────────────────────────┐
+                 │       Prisma ORM       │
+                 └────────────┬───────────┘
+                              │
+                              ▼
+                 ┌────────────────────────┐
+                 │     PostgreSQL 16      │
+                 │       Porta 5432       │
+                 └────────────────────────┘
 
-### Fluxo de comunicação
+### Responsabilidades por camada
 
-```text
-Página React
-    │
-    ▼
-services/api.js
-    │
-    ▼
-HTTP Request
-    │
-    ▼
-Express Routes
-    │
-    ├── Middleware de autenticação
-    │   valida JWT e sessão
-    │
-    ├── Middleware de autorização
-    │   restringe operações ao PROFESSOR
-    │
-    ▼
-Controller
-    │
-    ▼
-Service
-    │
-    ▼
-Prisma Client
-    │
-    ▼
-PostgreSQL
-```
+| Camada | Responsabilidade |
+|---|---|
+| Web | Interface para consulta de posts e administração de publicações |
+| Mobile | Interface para consulta de posts e gerenciamento de posts, professores e alunos |
+| API REST | Endpoints, autenticação, autorização e regras de negócio |
+| Prisma ORM | Comunicação entre backend e banco de dados |
+| PostgreSQL | Persistência de usuários e publicações |
 
 ---
 
-## Arquitetura do Backend
+## Tecnologias utilizadas
 
-O backend segue uma arquitetura em camadas.
-
-### Routes
-
-Responsáveis pelo mapeamento dos endpoints HTTP.
-
-### Middleware
-
-Responsável pela autenticação e autorização das operações protegidas.
-
-O middleware `autenticar` valida o JWT armazenado no cookie `HttpOnly`, verifica sua assinatura e expiração e disponibiliza os dados do usuário em `req.user`.
-
-O middleware `autorizarProfessor` verifica se o usuário autenticado possui o papel `PROFESSOR` antes de permitir operações administrativas.
-
-### Controllers
-
-Recebem as requisições, validam dados e formatam as respostas HTTP.
-
-### Services
-
-Concentram a lógica de acesso e manipulação dos dados.
-
-### Prisma Client
-
-Realiza a comunicação entre a aplicação e o PostgreSQL.
-
----
-
-## Tecnologias Utilizadas
+### Backend e banco de dados
 
 | Tecnologia | Finalidade |
 |---|---|
-| React 19.2.8 | Construção da interface |
-| React Router DOM 7.18.2 | Navegação entre páginas |
-| Vite 8.2.2 | Ambiente e build do frontend |
+| Node.js (>= 20) | Ambiente de execução |
+| Express 5 | API REST |
+| Prisma ORM 7 | Mapeamento e acesso ao banco |
+| PostgreSQL 16 | Banco de dados relacional |
+| bcryptjs | Hash e validação de senhas |
+| jsonwebtoken | Geração e validação de JWT |
+| cookie-parser | Leitura do cookie de autenticação |
+| CORS | Comunicação entre as interfaces e a API |
+| Jest | Testes automatizados |
+| Supertest | Testes HTTP da API |
+
+### Frontend Web
+
+| Tecnologia | Finalidade |
+|---|---|
+| React 19 | Construção da interface |
+| React Router DOM 7 | Navegação |
+| Vite 8 | Ambiente de desenvolvimento e build |
 | CSS | Estilização e responsividade |
 | Context API | Estado de autenticação |
-| ESLint 10.9.0 | Análise estática do frontend |
-| Node.js >= 20 | Ambiente de execução do backend |
-| Express 5 | API REST |
-| Prisma ORM 7 | Acesso ao banco |
-| PostgreSQL 16 | Banco relacional |
-| bcryptjs 3.0.3 | Hash e validação de senhas |
-| jsonwebtoken 9.0.3 | Geração e validação de JWT |
-| cookie-parser 1.4.7 | Leitura do cookie de autenticação |
-| CORS | Comunicação entre frontend e API |
-| Jest | Testes automatizados |
-| Supertest | Testes da API |
+| ESLint | Análise estática do código |
+
+### Aplicativo Mobile
+
+| Tecnologia | Finalidade |
+|---|---|
+| React Native 0.86 | Desenvolvimento multiplataforma |
+| Expo SDK 57 | Plataforma e ferramentas de desenvolvimento |
+| Expo Router | Navegação baseada em arquivos |
+| React 19 | Construção da interface |
+| TypeScript 6 | Tipagem estática |
+| Expo Secure Store | Armazenamento seguro do JWT |
+| Expo Build Properties | Configurações nativas do aplicativo |
+
+### Infraestrutura e ferramentas
+
+| Tecnologia | Finalidade |
+|---|---|
 | Docker | Containerização |
 | Docker Compose | Orquestração dos serviços |
-| Nginx | Servidor do frontend em produção |
+| Nginx | Servidor da aplicação Web em produção |
 | GitHub Actions | Integração Contínua |
+| Xcode | Desenvolvimento e testes no iOS |
+| Android Studio | Desenvolvimento e testes no Android |
 
 ---
 
-## Estrutura do Projeto
+## Funcionalidades por aplicação
 
-```text
-tech-challenge-blog/
-│
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-│
-├── frontend/
-│   ├── public/
-│   │
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Header.jsx
-│   │   │   ├── PostCard.jsx
-│   │   │   └── ProtectedRoute.jsx
-│   │   │
-│   │   ├── contexts/
-│   │   │   ├── auth.js
-│   │   │   └── AuthProvider.jsx
-│   │   │
-│   │   ├── pages/
-│   │   │   ├── Admin.jsx
-│   │   │   ├── CreatePost.jsx
-│   │   │   ├── EditPost.jsx
-│   │   │   ├── Home.jsx
-│   │   │   ├── Login.jsx
-│   │   │   └── PostDetail.jsx
-│   │   │
-│   │   ├── services/
-│   │   │   └── api.js
-│   │   │
-│   │   ├── App.jsx
-│   │   ├── index.css
-│   │   └── main.jsx
-│   │
-│   ├── .dockerignore
-│   ├── Dockerfile
-│   ├── nginx.conf
-│   ├── package.json
-│   ├── package-lock.json
-│   └── vite.config.js
-│
-├── prisma/
-│   ├── migrations/
-│   │   ├── 20260623143608_criar_posts/
-│   │   ├── 20260923114500_reconciliar_posts/
-│   │   ├── 20260923151250_adicionar_usuarios_autenticacao/
-│   │   └── 20260924124552_definir_role_padrao_aluno/
-│   └── schema.prisma
-│
-├── scripts/
-│   └── createProfessor.js
-│
-├── src/
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   └── postController.js
-│   │
-│   ├── middleware/
-│   │   └── authMiddleware.js
-│   │
-│   ├── prisma/
-│   │   └── client.js
-│   │
-│   ├── routes/
-│   │   ├── authRoutes.js
-│   │   └── postRoutes.js
-│   │
-│   ├── services/
-│   │   ├── authService.js
-│   │   └── postService.js
-│   │
-│   ├── tests/
-│   │   └── post.test.js
-│   │
-│   ├── app.js
-│   └── server.js
-│
-├── .dockerignore
-├── .env.example
-├── Dockerfile
-├── docker-compose.yml
-├── package.json
-├── package-lock.json
-├── prisma.config.ts
-└── README.md
-```
+### Web — Fase 3
 
-O arquivo `.env` contém configurações locais e segredos e, por isso, é ignorado pelo Git. O arquivo `.env.example` serve como modelo seguro das variáveis necessárias.
+A aplicação Web utiliza React, Vite e React Router.
+
+**Área pública**
+- Visualização da lista de posts;
+- Pesquisa por palavra-chave;
+- Acesso ao conteúdo completo das publicações.
+
+**Área do professor**
+- Login;
+- Painel administrativo;
+- Criação de posts;
+- Edição de posts;
+- Exclusão de posts.
+
+### Mobile — Fase 4
+
+O aplicativo foi desenvolvido com React Native, Expo Router e TypeScript.
+
+**Área pública**
+- Listagem de posts;
+- Visualização de título, autor e resumo;
+- Busca por palavras-chave;
+- Leitura completa de uma publicação.
+
+**Área do professor**
+- Login e logout;
+- Painel administrativo;
+- Criação, edição e exclusão de posts;
+- Listagem e paginação de professores;
+- Cadastro, edição e exclusão de professores;
+- Listagem e paginação de alunos;
+- Cadastro, edição e exclusão de alunos.
+
+A documentação específica do aplicativo está em [mobile/README.md](mobile/README.md).
 
 ---
 
-## Rotas do Frontend
+## Arquitetura do backend
 
-| Rota | Acesso | Função |
-|---|---|---|
-| `/` | Público | Listagem e pesquisa de posts |
-| `/posts/:id` | Público | Leitura completa do post |
-| `/login` | Público | Login |
-| `/posts/novo` | PROFESSOR | Criação de post |
-| `/posts/:id/editar` | PROFESSOR | Edição de post |
-| `/admin` | PROFESSOR | Administração dos posts |
+O backend segue uma organização em camadas:
 
-As rotas administrativas utilizam o componente `ProtectedRoute`.
+- **Routes:** mapeamento dos endpoints HTTP;
+- **Middleware:** autenticação e autorização;
+- **Controllers:** tratamento das requisições e respostas;
+- **Services:** regras de negócio e operações sobre os dados;
+- **Prisma Client:** acesso ao PostgreSQL.
 
-O componente verifica o estado da sessão através do `AuthProvider`.
-
-Quando o usuário não está autenticado, o acesso a uma rota administrativa redireciona para:
-
-```text
-/login
-```
-
-Quando existe uma sessão válida, mas o usuário não possui o papel `PROFESSOR`, o acesso administrativo é bloqueado e o usuário é redirecionado para:
-
-```text
-/
-```
-
-A proteção do frontend melhora a navegação e a experiência do usuário, mas a autorização efetiva também é realizada no backend.
+O middleware de autenticação valida o JWT e disponibiliza os dados do usuário em req.user. O middleware de autorização verifica o papel do usuário antes de permitir operações administrativas.
 
 ---
 
-## Autenticação
+## Autenticação e segurança
 
-A aplicação utiliza autenticação integrada ao backend, com usuários persistidos no PostgreSQL.
+A autenticação é realizada pelo backend e compartilhada pelas aplicações Web e Mobile, respeitando as necessidades de cada plataforma.
 
-### Fluxo de autenticação
+### Aplicação Web
 
-```text
-Usuário informa e-mail e senha
-        ↓
-POST /auth/login
-        ↓
-Backend consulta o usuário no PostgreSQL
-        ↓
-bcryptjs compara a senha com o hash armazenado
-        ↓
-API gera um JWT assinado
-        ↓
-JWT é enviado em cookie HttpOnly
-        ↓
-Frontend consulta GET /auth/me
-        ↓
-Backend valida o JWT
-        ↓
-Sessão e papel do usuário são disponibilizados ao frontend
-```
+A aplicação Web utiliza autenticação baseada em cookie:
+- Login realizado pela API;
+- JWT assinado pelo backend;
+- Cookie auth_token configurado como HttpOnly;
+- Envio de credenciais nas requisições com credentials: "include";
+- Consulta da sessão através de GET /auth/me;
+- Encerramento da sessão através de POST /auth/logout.
 
-### Senhas
+### Aplicativo Mobile
 
-As senhas não são armazenadas em texto puro.
-
-O `bcryptjs` é utilizado para gerar e validar hashes de senha.
-
-O professor inicial pode ser criado ou atualizado através do script:
-
-```text
-scripts/createProfessor.js
-```
-
-As credenciais são obtidas das variáveis:
-
-```text
-PROFESSOR_EMAIL
-PROFESSOR_PASSWORD
-```
-
-### JWT e cookie de autenticação
-
-Após um login válido, a API gera um JWT assinado com validade de **1 hora**.
-
-O token contém informações necessárias para identificar o usuário e seu papel de acesso.
-
-O JWT é armazenado no cookie:
-
-```text
-auth_token
-```
-
-O cookie é configurado com `HttpOnly`, impedindo que o JavaScript executado no navegador acesse diretamente o token.
-
-O frontend envia o cookie nas chamadas à API utilizando:
-
-```js
-credentials: "include"
-```
-
-O backend permite o envio de credenciais através da configuração de CORS com:
-
-```js
-credentials: true
-```
-
-### Sessão
-
-A sessão atual é consultada por:
-
-```http
-GET /auth/me
-```
-
-O logout é realizado por:
-
-```http
-POST /auth/logout
-```
-
-No logout, o backend remove o cookie de autenticação e o frontend limpa o estado do usuário.
+O aplicativo Mobile utiliza autenticação por Bearer Token:
+- Login realizado pela API;
+- Token JWT retornado pelo backend;
+- Armazenamento no dispositivo com expo-secure-store;
+- Envio do token no cabeçalho Authorization: Bearer <token>;
+- Recuperação e exclusão do token durante o ciclo de autenticação.
 
 ### Autorização por papel
 
-O sistema possui dois papéis definidos pelo enum `Role`:
+O sistema possui dois papéis:
+- PROFESSOR
+- ALUNO
 
-```text
-PROFESSOR
-ALUNO
-```
+As operações administrativas são protegidas no backend. A autorização efetiva não depende apenas da navegação ou da proteção visual das telas.
 
-O middleware:
+Comportamento esperado:
+- Usuário sem autenticação válida: 401 Unauthorized;
+- Usuário autenticado sem permissão: 403 Forbidden;
+- Professor autenticado e autorizado: operação permitida.
 
-```text
-autenticar
-```
-
-valida o JWT e disponibiliza os dados do usuário em `req.user`.
-
-O middleware:
-
-```text
-autorizarProfessor
-```
-
-permite operações administrativas somente quando:
-
-```text
-role = PROFESSOR
-```
-
-Assim:
-
-```text
-Sem sessão válida          → HTTP 401 Unauthorized
-Usuário ALUNO autenticado  → HTTP 403 Forbidden
-Usuário PROFESSOR          → acesso permitido
-```
-
-As operações de criação, edição e exclusão de posts são protegidas no backend.
+As senhas são armazenadas como hashes gerados com bcryptjs. Segredos e credenciais devem ser definidos por variáveis de ambiente e não devem ser enviados ao repositório.
 
 ---
 
-## Endpoints da API
+## Endpoints da API REST
 
-| Método | Endpoint | Autenticação | Descrição |
-|---|---|---|---|
-| POST | `/auth/login` | Não | Autentica o usuário e cria a sessão |
-| GET | `/auth/me` | Sim | Retorna o usuário da sessão atual |
-| POST | `/auth/logout` | Não | Encerra a sessão |
-| GET | `/posts` | Não | Lista todos os posts |
-| GET | `/posts/:id` | Não | Busca um post por ID |
-| GET | `/posts/search?termo=` | Não | Pesquisa posts |
-| POST | `/posts` | PROFESSOR | Cria um novo post |
-| PUT | `/posts/:id` | PROFESSOR | Atualiza um post |
-| DELETE | `/posts/:id` | PROFESSOR | Exclui um post |
+A API é compartilhada pelas aplicações Web e Mobile.
 
-### Pesquisa
+### Autenticação
 
-A pesquisa considera:
+| Método | Endpoint | Descrição |
+|---|---|---|
+| POST | /auth/login | Autentica o usuário |
+| GET | /auth/me | Consulta o usuário da sessão/token |
+| POST | /auth/logout | Encerra a sessão Web |
 
-- título;
-- conteúdo;
-- autor.
+### Posts
+
+| Método | Endpoint | Acesso |
+|---|---|---|
+| GET | /posts | Público |
+| GET | /posts/:id | Público |
+| GET | /posts/search?termo= | Público |
+| POST | /posts | Professor |
+| PUT | /posts/:id | Professor |
+| DELETE | /posts/:id | Professor |
+
+A pesquisa considera título, conteúdo e autor.
 
 Exemplo:
 
-```http
-GET /posts/search?termo=React
-```
+    GET /posts/search?termo=React
+
+### Professores
+
+| Método | Endpoint | Operação |
+|---|---|---|
+| GET | /professores | Listagem paginada |
+| GET | /professores/:id | Consulta individual |
+| POST | /professores | Cadastro |
+| PUT | /professores/:id | Atualização |
+| DELETE | /professores/:id | Exclusão |
+
+### Alunos
+
+| Método | Endpoint | Operação |
+|---|---|---|
+| GET | /alunos | Listagem paginada |
+| GET | /alunos/:id | Consulta individual |
+| POST | /alunos | Cadastro |
+| PUT | /alunos/:id | Atualização |
+| DELETE | /alunos/:id | Exclusão |
+
+As rotas administrativas exigem autenticação e autorização conforme as regras implementadas no backend.
+
+As listagens administrativas utilizam paginação e retornam dados de paginação, como página atual, limite, total de registros e total de páginas.
 
 ---
 
-## Modelo de Dados
+## Modelo de dados
 
-O banco possui as entidades `Post` e `User`, além do enum `Role`.
+O banco utiliza PostgreSQL e Prisma ORM.
 
 ### Post
 
 | Campo | Tipo | Descrição |
 |---|---|---|
 | id | Integer | Identificador |
-| titulo | String | Título |
+| titulo | String | Título da publicação |
 | conteudo | String | Conteúdo |
 | autor | String | Autor |
 | createdAt | DateTime | Data de criação |
 | updatedAt | DateTime | Data de atualização |
 
-A tabela correspondente no PostgreSQL é:
-
-```text
-posts
-```
+Tabela: posts.
 
 ### User
 
 | Campo | Tipo | Descrição |
 |---|---|---|
 | id | Integer | Identificador |
-| email | String | E-mail único do usuário |
-| password | String | Hash bcrypt da senha |
-| role | Role | Papel de acesso do usuário |
+| email | String | E-mail único |
+| password | String | Hash da senha |
+| role | Role | Papel de acesso |
 | createdAt | DateTime | Data de criação |
 | updatedAt | DateTime | Data de atualização |
 
-A tabela correspondente no PostgreSQL é:
+Tabela: users.
 
-```text
-users
-```
-
-### Role
-
-Os papéis disponíveis são:
-
-```text
-PROFESSOR
-ALUNO
-```
-
-`PROFESSOR` possui acesso às funcionalidades administrativas.
-
-`ALUNO` não possui autorização para criar, editar ou excluir posts.
+O enum Role possui os valores PROFESSOR e ALUNO.
 
 ---
 
-## Execução com Docker
+## Estrutura do repositório
 
-Esta é a forma mais simples de executar a aplicação completa.
+    tech-challenge-blog/
+    │
+    ├── .github/
+    │   └── workflows/
+    │       └── ci.yml
+    │
+    ├── frontend/
+    │   ├── src/
+    │   │   ├── components/
+    │   │   ├── contexts/
+    │   │   ├── pages/
+    │   │   ├── services/
+    │   │   ├── App.jsx
+    │   │   └── main.jsx
+    │   ├── Dockerfile
+    │   ├── nginx.conf
+    │   └── package.json
+    │
+    ├── mobile/
+    │   ├── src/
+    │   │   ├── app/
+    │   │   │   ├── admin/
+    │   │   │   ├── post/
+    │   │   │   ├── _layout.tsx
+    │   │   │   ├── index.tsx
+    │   │   │   └── login.tsx
+    │   │   └── services/
+    │   │       ├── api.ts
+    │   │       └── auth.ts
+    │   ├── assets/
+    │   ├── app.json
+    │   └── package.json
+    │
+    ├── prisma/
+    │   ├── migrations/
+    │   └── schema.prisma
+    │
+    ├── scripts/
+    │   └── createProfessor.js
+    │
+    ├── src/
+    │   ├── controllers/
+    │   ├── middleware/
+    │   ├── prisma/
+    │   ├── routes/
+    │   ├── services/
+    │   ├── tests/
+    │   ├── app.js
+    │   └── server.js
+    │
+    ├── .env.example
+    ├── Dockerfile
+    ├── docker-compose.yml
+    ├── package.json
+    └── README.md
 
-### Pré-requisitos
+O arquivo .env contém configurações locais e segredos e é ignorado pelo Git. O arquivo .env.example apresenta o modelo das variáveis necessárias.
 
-- Docker Desktop
-- Docker Compose
+---
 
-### Configuração das variáveis de ambiente
+## Pré-requisitos
 
-Crie o arquivo `.env` a partir do modelo:
+- Node.js 20 ou superior;
+- npm;
+- Docker Desktop e Docker Compose;
+- Xcode para desenvolvimento e execução no iOS;
+- Android Studio para desenvolvimento e execução no Android;
+- Expo CLI, utilizado através do npx.
 
-```bash
-cp .env.example .env
-```
+O ambiente Mobile foi desenvolvido com Expo SDK 57 e React Native 0.86.
 
-Depois configure valores próprios para:
+---
 
-```env
-JWT_SECRET="substitua_por_um_segredo_seguro"
-PROFESSOR_EMAIL="professor@fiap.com.br"
-PROFESSOR_PASSWORD="substitua_por_uma_senha_segura"
-```
+## Configuração do ambiente
 
-O arquivo `.env` é ignorado pelo Git e não deve conter valores que sejam versionados no repositório.
+Clone o repositório:
 
-### Subir a aplicação
+    git clone https://github.com/danielromera83/tech-challenge-blog.git
+    cd tech-challenge-blog
+
+Instale as dependências do backend:
+
+    npm ci
+
+Crie o arquivo de configuração local:
+
+    cp .env.example .env
+
+Configure as variáveis de ambiente no arquivo .env. Exemplo:
+
+    DATABASE_URL="postgresql://postgres:SUA_SENHA@localhost:5432/blog"
+    PORT=3000
+    JWT_SECRET="substitua_por_um_segredo_seguro"
+    PROFESSOR_EMAIL="professor@fiap.com.br"
+    PROFESSOR_PASSWORD="substitua_por_uma_senha_segura"
+    CORS_ORIGINS="http://localhost:5173,http://localhost:8080"
+
+Utilize credenciais próprias e seguras. Não compartilhe o conteúdo do arquivo .env.
+
+---
+
+## Executando com Docker
+
+O Docker Compose disponibiliza três serviços:
+
+| Serviço | Container | Porta |
+|---|---|---|
+| banco | postgres-blog | 5432 |
+| api | blog-api | 3000 |
+| frontend | blog-frontend | 8080 |
+
+O serviço da API aguarda o PostgreSQL ficar saudável e executa as migrations, cria ou atualiza o professor configurado e inicia o servidor.
 
 Na raiz do projeto:
 
-```bash
-docker compose up -d --build
-```
+    docker compose up -d --build
 
-O Docker Compose inicia três serviços:
+Verifique os serviços:
 
-| Container | Serviço | Porta |
-|---|---|---|
-| `blog-frontend` | React + Nginx | `8080` |
-| `blog-api` | Node.js + Express | `3000` |
-| `postgres-blog` | PostgreSQL 16 | `5432` |
+    docker compose ps
 
-O PostgreSQL utiliza o volume:
-
-```text
-postgres_data
-```
-
-para persistência dos dados.
-
-O serviço da API aguarda o PostgreSQL ficar saudável e executa automaticamente:
-
-```text
-npx prisma migrate deploy
-        ↓
-node scripts/createProfessor.js
-        ↓
-npm start
-```
-
-Dessa forma, ao iniciar os containers:
-
-1. as migrations pendentes são aplicadas;
-2. o professor definido no `.env` é criado ou atualizado;
-3. a API é iniciada.
-
-Verifique o estado dos containers:
-
-```bash
-docker compose ps
-```
-
-### Acessos
-
-Frontend:
-
-```text
-http://localhost:8080
-```
-
-API:
-
-```text
-http://localhost:3000
-```
+Acessos:
+- Web: http://localhost:8080
+- API: http://localhost:3000
 
 Para acompanhar os logs:
 
-```bash
-docker compose logs -f
-```
+    docker compose logs -f
 
-Para encerrar os containers:
+Para encerrar os serviços:
 
-```bash
-docker compose down
-```
+    docker compose down
+
+O banco utiliza volume Docker para persistência dos dados.
 
 ---
 
-## Execução em Desenvolvimento
+## Executando em desenvolvimento
 
-Para executar backend e frontend diretamente no ambiente local, utilize Node.js **20 ou superior**.
+### 1. Banco de dados
 
-O projeto declara:
+Na raiz do projeto, inicie somente o PostgreSQL:
 
-```text
-Node.js >= 20
-```
+    docker compose up -d banco
 
-O projeto suporta Node.js 20 ou superior. O ambiente de desenvolvimento local foi validado com Node.js 22, o Docker do backend utiliza Node.js 20 e o workflow de CI está configurado para Node.js 22.
+### 2. Backend
 
-### Backend
+Na raiz do projeto:
 
-Na raiz do projeto, instale as dependências:
-
-```bash
-npm ci
-```
-
-Crie o arquivo local de configuração, caso ainda não exista:
-
-```bash
-cp .env.example .env
-```
-
-Configure as variáveis conforme o seu ambiente.
-
-Exemplo:
-
-```env
-DATABASE_URL="postgresql://postgres:123456@localhost:5432/blog"
-PORT=3000
-JWT_SECRET="substitua_por_um_segredo_seguro"
-PROFESSOR_EMAIL="professor@fiap.com.br"
-PROFESSOR_PASSWORD="substitua_por_uma_senha_segura"
-CORS_ORIGINS="http://localhost:5173,http://localhost:8080"
-```
-
-Inicie somente o PostgreSQL:
-
-```bash
-docker compose up -d banco
-```
-
-Gere o Prisma Client:
-
-```bash
-npx prisma generate
-```
-
-Aplique as migrations existentes:
-
-```bash
-npx prisma migrate deploy
-```
-
-Crie ou atualize o professor configurado no `.env`:
-
-```bash
-node scripts/createProfessor.js
-```
-
-Inicie a API em modo de desenvolvimento:
-
-```bash
-npm run dev
-```
+    npm ci
+    npx prisma generate
+    npx prisma migrate deploy
+    node scripts/createProfessor.js
+    npm run dev
 
 A API ficará disponível em:
 
-```text
-http://localhost:3000
-```
+    http://localhost:3000
 
-#### Desenvolvimento do schema Prisma
+A rota raiz pode ser utilizada para verificar se a API está em execução:
 
-Quando for necessário criar uma **nova migration** durante o desenvolvimento, utilize:
+    curl http://localhost:3000/
 
-```bash
-npm run prisma:migrate
-```
+Para consultar os posts:
 
-Esse script executa:
+    curl http://localhost:3000/posts
 
-```text
-prisma migrate dev
-```
-
-Para ambientes que apenas precisam aplicar migrations já versionadas, utilize:
-
-```bash
-npx prisma migrate deploy
-```
-
----
-
-### Frontend
+### 3. Frontend Web
 
 Em outro terminal:
 
-```bash
-cd frontend
-```
+    cd frontend
+    npm ci
+    npm run dev
 
-Instale as dependências:
+O Vite disponibilizará a aplicação em:
 
-```bash
-npm ci
-```
+    http://localhost:5173
 
-Inicie o Vite:
+Para gerar o build de produção:
 
-```bash
-npm run dev
-```
+    npm run build
 
-O frontend ficará disponível em:
+Para executar o ESLint:
 
-```text
-http://localhost:5173
-```
+    npm run lint
 
----
+### 4. Aplicativo Mobile
 
-### CORS e envio do cookie
+Em outro terminal:
 
-O backend utiliza o middleware `cors` para permitir a comunicação entre o frontend e a API executados em origens diferentes.
+    cd mobile
+    npm ci
 
-Por padrão, são permitidas:
+O aplicativo utiliza a variável EXPO_PUBLIC_API_URL para localizar a API.
 
-```text
-http://localhost:5173
-http://localhost:8080
-```
+Em simulador ou dispositivo físico, configure um endereço acessível pela rede. Exemplo:
 
-Essas origens podem ser configuradas através de:
+    EXPO_PUBLIC_API_URL=http://SEU_IP_LOCAL:3000 npx expo start --dev-client --lan -c
 
-```text
-CORS_ORIGINS
-```
+Substitua SEU_IP_LOCAL pelo endereço IP da máquina onde o backend está sendo executado.
 
-Como a autenticação utiliza cookie, o backend habilita:
+**Importante:** em dispositivo físico, não utilize localhost para acessar a API executada no computador. Utilize o IP da máquina na rede local.
 
-```js
-credentials: true
-```
+#### iOS
 
-e o frontend envia as requisições utilizando:
+Para gerar e instalar o development build:
 
-```js
-credentials: "include"
-```
+    npx expo run:ios
 
-Em desenvolvimento:
+Com o development build instalado, inicie o Metro:
 
-```text
-React        → localhost:5173
-API          → localhost:3000
-PostgreSQL   → localhost:5432
-```
+    EXPO_PUBLIC_API_URL=http://SEU_IP_LOCAL:3000 npx expo start --dev-client --lan
 
-Com Docker:
+#### Android
 
-```text
-React/Nginx  → localhost:8080
-API          → localhost:3000
-PostgreSQL   → localhost:5432
-```
+Para gerar e executar o aplicativo:
+
+    npx expo run:android
+
+A variável EXPO_PUBLIC_API_URL deve apontar para um endereço acessível pelo emulador ou dispositivo.
+
+A documentação específica do Mobile contém orientações complementares de instalação, configuração e execução: [mobile/README.md](mobile/README.md).
 
 ---
 
-## Responsividade e Acessibilidade
-
-A interface foi desenvolvida para funcionar em diferentes tamanhos de tela.
-
-Foram realizados testes em:
-
-- desktop;
-- tablet;
-- dispositivos móveis.
-
-A interface utiliza:
-
-- layout responsivo;
-- media queries;
-- inputs e botões adaptáveis;
-- navegação compatível com dispositivos móveis;
-- foco visível para elementos interativos;
-- labels associadas aos formulários;
-- mensagens de erro com `role="alert"`;
-- tamanhos adequados de áreas clicáveis.
-
----
-
-## Testes
-
-O backend utiliza:
-
-- Jest;
-- Supertest.
-
-Os testes automatizados cobrem operações da API, autenticação e autorização.
-
-Entre os cenários validados estão:
-
-- login válido de professor;
-- rejeição de senha inválida;
-- recuperação da sessão através de `/auth/me`;
-- encerramento da sessão com logout;
-- rejeição de operação protegida sem autenticação (`401`);
-- rejeição de operação administrativa para usuário `ALUNO` (`403`);
-- listagem e consulta de posts;
-- pesquisa de posts;
-- validação de dados obrigatórios;
-- criação de post por usuário `PROFESSOR`.
-
-Executar:
-
-```bash
-npm test
-```
-
-Resultado validado:
-
-```text
-Test Suites: 1 passed
-Tests:       12 passed
-```
-
-Cobertura geral observada:
-
-```text
-76%
-```
-
-Os testes também foram executados com sucesso sobre um banco PostgreSQL vazio após a aplicação de todas as migrations com:
-
-```bash
-npx prisma migrate deploy
-```
-
-Isso valida o funcionamento do histórico completo de migrations em uma instalação limpa.
-
----
-
-## Validação do Frontend
-
-### ESLint
-
-```bash
-cd frontend
-npm run lint
-```
-
-### Build
-
-```bash
-npm run build
-```
-
-O build de produção é gerado em:
-
-```text
-frontend/dist/
-```
-
----
-
-## Docker do Frontend
-
-O frontend utiliza um **Dockerfile multi-stage**.
-
-### Etapa 1
-
-Node.js é utilizado para:
-
-```text
-npm ci
-npm run build
-```
-
-### Etapa 2
-
-O Nginx serve os arquivos finais gerados pelo Vite.
-
-```text
-React
-  ↓
-Vite Build
-  ↓
-dist/
-  ↓
-Nginx
-  ↓
-Porta 80 no container
-  ↓
-localhost:8080
-```
-
-O `nginx.conf` utiliza:
-
-```nginx
-try_files $uri $uri/ /index.html;
-```
-
-Isso permite que rotas do React Router, como `/admin` e `/posts/:id`, funcionem mesmo quando acessadas diretamente ou após atualização da página.
-
----
-
-## Docker Compose
-
-O Docker Compose orquestra os três serviços:
-
-```text
-                 Docker Compose
-
-                       │
-       ┌───────────────┼───────────────┐
-       │               │               │
-       ▼               ▼               ▼
- blog-frontend      blog-api      postgres-blog
- React/Nginx       Node/Express    PostgreSQL
-     :8080            :3000          :5432
-                         │
-                         ▼
-                     Prisma ORM
-```
-
----
-
-## Integração Contínua
-
-O projeto utiliza **GitHub Actions**.
+## Integração Contínua — GitHub Actions
 
 O workflow está localizado em:
 
-```text
-.github/workflows/ci.yml
-```
+    .github/workflows/ci.yml
 
-Pode ser executado em:
+O workflow pode ser executado:
+- Em push para main ou master;
+- Em Pull Requests direcionados a main ou master;
+- Manualmente através de workflow_dispatch.
 
-- push para `main` ou `master`;
-- pull request para `main` ou `master`;
-- execução manual através de `workflow_dispatch`.
-
-O runner utilizado é:
-
-```text
-ubuntu-22.04
-```
+O ambiente de CI utiliza Ubuntu 22.04, Node.js 22 e PostgreSQL 16.
 
 ### Validações do backend
 
-1. Checkout do código;
-2. configuração do Node.js 22;
-3. instalação das dependências;
-4. geração do Prisma Client;
-5. aplicação das migrations com `prisma migrate deploy`;
-6. execução dos testes Jest com cobertura.
+1. Instalação das dependências;
+2. Geração do Prisma Client;
+3. Aplicação das migrations;
+4. Execução dos testes automatizados com Jest e cobertura.
 
-### Validações do frontend
+### Validações do frontend Web
 
 1. Instalação das dependências;
 2. Execução do ESLint;
 3. Build de produção com Vite.
 
-O workflow foi configurado para reproduzir um ambiente limpo com PostgreSQL 16, aplicar as migrations versionadas e executar as validações automatizadas do backend e do frontend.
+### Validações do Mobile
+
+1. Instalação das dependências;
+2. Verificação de tipos TypeScript com tsc --noEmit.
+
+Consulte as execuções e seus resultados em [GitHub Actions](https://github.com/danielromera83/tech-challenge-blog/actions).
 
 ---
 
-## Scripts do Backend
+## Testes e validações
 
-| Script | Descrição |
-|---|---|
-| `npm start` | Inicia a API |
-| `npm run dev` | Desenvolvimento com Node Watch |
-| `npm test` | Testes com Jest e cobertura |
-| `npm run prisma:generate` | Gera Prisma Client |
-| `npm run prisma:migrate` | Cria e aplica migrations durante o desenvolvimento |
-| `npm run prisma:studio` | Prisma Studio |
+### Backend
 
----
+Os testes automatizados utilizam Jest e Supertest.
 
-## Scripts do Frontend
+Execute na raiz do projeto:
 
-Executados dentro de `frontend/`.
+    npm test
 
-| Script | Descrição |
-|---|---|
-| `npm run dev` | Inicia Vite |
-| `npm run build` | Gera build |
-| `npm run lint` | Executa ESLint |
-| `npm run preview` | Pré-visualiza o build |
+A suíte contempla cenários de API, autenticação, autorização e operações de gerenciamento.
 
----
+Durante a validação local também foram conferidos:
+- Disponibilidade do PostgreSQL;
+- Estado das migrations Prisma;
+- Inicialização da API;
+- Consulta pública de posts;
+- Login de professor;
+- Acesso autenticado às rotas administrativas;
+- Cadastro, login, atualização e exclusão de aluno;
+- Bloqueio de acesso administrativo para usuário sem permissão.
 
-## Tratamento de Erros
+### Mobile
 
-A API utiliza códigos HTTP compatíveis com cada cenário.
+A validação manual foi realizada no simulador iOS e contemplou:
 
-| Código | Significado |
-|---|---|
-| 200 | Sucesso |
-| 201 | Recurso criado |
-| 400 | Requisição inválida |
-| 401 | Não autorizado |
-| 403 | Usuário autenticado sem permissão para a operação |
-| 404 | Recurso não encontrado |
-| 500 | Erro interno |
+- Inicialização do aplicativo;
+- Comunicação com a API REST;
+- Listagem, busca e leitura de posts;
+- Login e logout;
+- Acesso à área administrativa;
+- Criação, edição e exclusão de posts;
+- Listagem, cadastro, edição e exclusão de professores;
+- Listagem, cadastro, edição e exclusão de alunos;
+- Navegação paginada nas listagens administrativas;
+- Retorno à Home.
 
-O frontend também trata:
-
-- carregamento dos dados;
-- mensagens de erro da API;
-- pesquisas sem resultados;
-- posts inexistentes;
-- credenciais inválidas.
+A validação manual no simulador é complementar às verificações automatizadas configuradas no GitHub Actions.
 
 ---
 
-## Funcionalidades
+## Decisões técnicas
 
-### Público
-
-- ✅ Visualizar posts
-- ✅ Pesquisar posts
-- ✅ Ler conteúdo completo
-
-### Professor autenticado
-
-- ✅ Login
-- ✅ Logout
-- ✅ Criar post
-- ✅ Editar post
-- ✅ Excluir post
-- ✅ Visualizar painel administrativo
-
-### Infraestrutura
-
-- ✅ PostgreSQL
-- ✅ Prisma ORM
-- ✅ Docker
-- ✅ Docker Compose
-- ✅ Nginx
-- ✅ CORS
-- ✅ GitHub Actions
-- ✅ Build automatizado
-- ✅ ESLint
+- **Backend centralizado:** Web e Mobile reutilizam a mesma API REST e o mesmo banco de dados.
+- **Separação de responsabilidades:** interfaces, API, regras de negócio e persistência possuem responsabilidades distintas.
+- **Autenticação compatível com as plataformas:** cookie HttpOnly na Web e Bearer Token no Mobile.
+- **Armazenamento seguro no Mobile:** utilização de Expo Secure Store para o JWT.
+- **Autorização no backend:** operações administrativas verificam autenticação e papel do usuário na API.
+- **Expo Router:** navegação do Mobile baseada na estrutura de arquivos.
+- **TypeScript:** tipagem estática no aplicativo Mobile.
+- **Docker Compose:** execução integrada do banco, API e frontend Web.
+- **GitHub Actions:** automação das validações do backend, Web e Mobile.
 
 ---
 
-## Experiências e Desafios Enfrentados
+## Melhorias futuras
 
-A evolução do projeto para uma solução Full Stack permitiu integrar conceitos de frontend, backend, banco de dados e infraestrutura.
-
-Entre os principais desafios enfrentados estiveram:
-
-- integração do React com uma API REST existente;
-- configuração do CORS entre frontend e backend;
-- utilização do React Router para navegação;
-- implementação de rotas públicas e protegidas;
-- evolução da autenticação simulada para autenticação real com PostgreSQL, bcrypt, JWT, cookie HttpOnly e autorização baseada em papéis;
-- integração das operações CRUD à interface;
-- criação de uma interface responsiva;
-- tratamento dos estados de carregamento e erro;
-- configuração do Nginx para suportar React Router;
-- criação de um Dockerfile específico para o frontend;
-- orquestração de frontend, backend e PostgreSQL com Docker Compose;
-- integração das validações do frontend ao GitHub Actions;
-- resolução de questões relacionadas à disponibilidade de runners do GitHub Actions.
-
-O desenvolvimento possibilitou consolidar conhecimentos sobre a comunicação entre diferentes camadas de uma aplicação Full Stack e sobre o ciclo completo de desenvolvimento, testes, containerização e integração contínua.
+Possíveis evoluções para versões posteriores:
+- Documentação interativa da API com Swagger/OpenAPI;
+- Testes automatizados de interface Web e Mobile;
+- Ampliação da cobertura de testes;
+- Deploy em nuvem;
+- Continuous Deployment (CD);
+- Recuperação de senha e gerenciamento de sessões;
+- Melhorias adicionais de acessibilidade e experiência de uso.
 
 ---
 
-## Melhorias Futuras
+## Licença e finalidade
 
-Possíveis evoluções:
-
-- paginação;
-- comentários nas publicações;
-- Swagger/OpenAPI;
-- validação com bibliotecas dedicadas;
-- testes automatizados do frontend;
-- ampliação da cobertura de testes do backend;
-- configuração da URL da API por variáveis de ambiente;
-- deploy em nuvem;
-- Continuous Deployment (CD).
-
----
-
-## Segurança
-
-A aplicação utiliza autenticação integrada ao backend com usuários persistidos no PostgreSQL.
-
-As principais medidas implementadas são:
-
-- senhas armazenadas como hash utilizando `bcryptjs`;
-- autenticação realizada pela API;
-- geração de JWT assinado pelo backend;
-- expiração do JWT após 1 hora;
-- armazenamento do JWT em cookie `HttpOnly`;
-- segredo do JWT definido por variável de ambiente;
-- credenciais não versionadas no Git;
-- validação da sessão no backend;
-- autorização baseada no papel do usuário;
-- operações administrativas restritas ao papel `PROFESSOR`;
-- retorno `401 Unauthorized` para usuários não autenticados;
-- retorno `403 Forbidden` para usuários autenticados sem permissão.
-
-O frontend utiliza o estado retornado pela API para controlar a navegação, mas a proteção efetiva dos recursos ocorre no backend.
-
-O cookie de autenticação utiliza:
-
-```text
-HttpOnly
-SameSite=Lax
-Secure quando NODE_ENV=production
-```
-
-A opção `Secure` exige que a aplicação em produção utilize HTTPS para que o cookie seja enviado pelo navegador.
-
-### Possíveis evoluções de segurança
-
-Para uma aplicação de produção, ainda poderiam ser adicionados recursos como:
-
-- política de complexidade e troca de senha;
-- recuperação de senha;
-- refresh tokens;
-- revogação de sessões;
-- bloqueio ou limitação após tentativas consecutivas de login;
-- rate limiting;
-- proteção CSRF adicional conforme a arquitetura de implantação;
-- auditoria de acessos;
-- gerenciamento administrativo de usuários;
-- níveis adicionais de permissão.
-
----
-
-## Licença
-
-Projeto desenvolvido exclusivamente para fins acadêmicos como parte do **Tech Challenge da Pós Tech em Full Stack Development — FIAP**.
+Projeto desenvolvido como parte do **Tech Challenge da Pós Tech em Full Stack Development — FIAP**, com finalidade acadêmica e de aprendizado em desenvolvimento Full Stack.
 
 ---
 
 ## Autor
 
-**Daniel Romera**
+**Daniel de Araújo Romera**
 
-Projeto desenvolvido durante a Pós Tech em Full Stack Development da FIAP.
-
-### Contato
+Pós Tech — Full Stack Development  
+FIAP
 
 - **GitHub:** https://github.com/danielromera83
 - **LinkedIn:** https://www.linkedin.com/in/daniel-romera-a5b522340/
